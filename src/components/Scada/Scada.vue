@@ -157,6 +157,47 @@ onMounted(() => {
   });
 
   graph.addCells([zone1, zone2]);
+
+  // Hand Valves
+
+  const handValve1 = new namespace.HandValve({
+    position: { x: 875, y: 450 },
+    open: 1,
+    angle: 270,
+    attrs: {
+      label: {
+        text: "Valve 1",
+      },
+    },
+  });
+
+  handValve1.addTo(graph);
+
+  const handValve2 = new namespace.HandValve({
+    position: { x: 650, y: 250 },
+    open: 1,
+    angle: 0,
+    attrs: {
+      label: {
+        text: "Valve 2",
+      },
+    },
+  });
+
+  handValve2.addTo(graph);
+
+  const handValve3 = new namespace.HandValve({
+    position: { x: 650, y: 450 },
+    open: 1,
+    angle: 0,
+    attrs: {
+      label: {
+        text: "Valve 3",
+      },
+    },
+  });
+
+  handValve3.addTo(graph);
 });
 </script>
 

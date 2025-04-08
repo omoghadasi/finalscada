@@ -36,69 +36,6 @@ const d = 10;
 const l = (3 * r) / 4;
 const step = 20;
 
-// Zones
-
-const zone1 = new Zone({
-  position: { x: 50, y: 600 },
-  attrs: {
-    label: {
-      text: "Zone 1",
-    },
-  },
-});
-
-const zone2 = new Zone({
-  position: { x: 865, y: 600 },
-  attrs: {
-    label: {
-      text: "Zone 2",
-    },
-  },
-});
-
-graph.addCells([zone1, zone2]);
-
-// Hand Valves
-
-const handValve1 = new HandValve({
-  position: { x: 875, y: 450 },
-  open: 1,
-  angle: 270,
-  attrs: {
-    label: {
-      text: "Valve 1",
-    },
-  },
-});
-
-handValve1.addTo(graph);
-
-const handValve2 = new HandValve({
-  position: { x: 650, y: 250 },
-  open: 1,
-  angle: 0,
-  attrs: {
-    label: {
-      text: "Valve 2",
-    },
-  },
-});
-
-handValve2.addTo(graph);
-
-const handValve3 = new HandValve({
-  position: { x: 650, y: 450 },
-  open: 1,
-  angle: 0,
-  attrs: {
-    label: {
-      text: "Valve 3",
-    },
-  },
-});
-
-handValve3.addTo(graph);
-
 // Joins
 
 const join1 = new Join({
