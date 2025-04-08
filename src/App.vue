@@ -1,8 +1,10 @@
-<script setup></script>
+<script setup>
+import Scada from "@/components/Scada/Scada.vue";
+</script>
 
 <template>
   <main>
-    <h1>salam</h1>
+    <scada />
   </main>
 </template>
 
