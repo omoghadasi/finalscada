@@ -36,32 +36,6 @@ const d = 10;
 const l = (3 * r) / 4;
 const step = 20;
 
-// CTRL Valves
-
-const controlValve1 = new ControlValve({
-  position: { x: 300, y: 295 },
-  open: 1,
-  attrs: {
-    label: {
-      text: "CTRL Valve 1",
-    },
-  },
-});
-
-controlValve1.addTo(graph);
-
-const controlValve2 = new ControlValve({
-  position: { x: 300, y: 495 },
-  open: 0.25,
-  attrs: {
-    label: {
-      text: "CTRL Valve 2",
-    },
-  },
-});
-
-controlValve2.addTo(graph);
-
 // Zones
 
 const zone1 = new Zone({

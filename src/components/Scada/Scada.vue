@@ -109,6 +109,32 @@ onMounted(() => {
 
   pump2.addTo(graph);
   pump2.power = 0;
+
+  // CTRL Valves
+
+  const controlValve1 = new namespace.ControlValve({
+    position: { x: 300, y: 295 },
+    open: 1,
+    attrs: {
+      label: {
+        text: "CTRL Valve 1",
+      },
+    },
+  });
+
+  controlValve1.addTo(graph);
+
+  const controlValve2 = new namespace.ControlValve({
+    position: { x: 300, y: 495 },
+    open: 0.25,
+    attrs: {
+      label: {
+        text: "CTRL Valve 2",
+      },
+    },
+  });
+
+  controlValve2.addTo(graph);
 });
 </script>
 

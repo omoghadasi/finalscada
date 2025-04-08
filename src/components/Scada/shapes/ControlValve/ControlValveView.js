@@ -13,9 +13,9 @@ export default dia.ElementView.extend({
 
   confirmUpdate(...args) {
     let flags = dia.ElementView.prototype.confirmUpdate.call(this, ...args);
-    this.animateLiquid();
+    // this.animateLiquid(); todo badan
     if (this.hasFlag(flags, OPEN_FLAG)) {
-      this.updateCover();
+      // this.updateCover(); todo badan
       flags = this.removeFlag(flags, OPEN_FLAG);
     }
     return flags;
