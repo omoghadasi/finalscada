@@ -212,6 +212,203 @@ onMounted(() => {
   });
 
   join2.addTo(graph);
+
+  // Pipes
+
+  const tank1Pipe1 = new namespace.Pipe({
+    source: {
+      id: tank1.id,
+      anchor: { name: "right", args: { dy: -25 } },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: controlValve1.id,
+      port: "left",
+      anchor: { name: "left" },
+    },
+  });
+
+  tank1Pipe1.addTo(graph);
+
+  const tank1Pipe2 = new namespace.Pipe({
+    source: {
+      id: tank1.id,
+      anchor: { name: "bottomRight", args: { dy: -40 } },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: controlValve2.id,
+      port: "left",
+      anchor: { name: "left" },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  tank1Pipe2.addTo(graph);
+
+  const tank2Pipe1 = new namespace.Pipe({
+    source: {
+      id: tank2.id,
+      selector: "bottom",
+      anchor: { name: "bottom" },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: handValve1.id,
+      port: "right",
+      anchor: { name: "right", args: { rotate: true } },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  tank2Pipe1.addTo(graph);
+
+  const ctrlValve1Pipe1 = new namespace.Pipe({
+    source: { id: controlValve1.id, port: "right", anchor: { name: "right" } },
+    target: { id: pump1.id, port: "left", anchor: { name: "left" } },
+  });
+
+  ctrlValve1Pipe1.addTo(graph);
+
+  const valve2Pipe1 = new namespace.Pipe({
+    source: {
+      id: handValve2.id,
+      port: "right",
+      anchor: { name: "right", args: { rotate: true } },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: join1.id,
+      anchor: { name: "top" },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  valve2Pipe1.addTo(graph);
+
+  const valve1Pipe1 = new namespace.Pipe({
+    source: {
+      id: handValve1.id,
+      port: "left",
+      anchor: { name: "left", args: { rotate: true } },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: join2.id,
+      anchor: { name: "top" },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  valve1Pipe1.addTo(graph);
+
+  const pump1Pipe1 = new namespace.Pipe({
+    source: {
+      id: pump1.id,
+      port: "right",
+      anchor: { name: "right", args: { rotate: true } },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: handValve2.id,
+      port: "left",
+      anchor: { name: "left", args: { rotate: true } },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  pump1Pipe1.addTo(graph);
+
+  const valve3Pipe1 = new namespace.Pipe({
+    source: {
+      id: handValve3.id,
+      port: "right",
+      anchor: { name: "right", args: { rotate: true } },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: join1.id,
+      anchor: { name: "left" },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  valve3Pipe1.addTo(graph);
+
+  const pump2Pipe1 = new namespace.Pipe({
+    source: {
+      id: pump2.id,
+      port: "right",
+      anchor: { name: "right", args: { rotate: true } },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: handValve3.id,
+      port: "left",
+      anchor: { name: "left", args: { rotate: true } },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  pump2Pipe1.addTo(graph);
+
+  const ctrlValve2Pipe1 = new namespace.Pipe({
+    source: { id: controlValve2.id, port: "right", anchor: { name: "right" } },
+    target: {
+      id: pump2.id,
+      port: "left",
+      anchor: { name: "left", args: { rotate: true } },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  ctrlValve2Pipe1.addTo(graph);
+
+  const zone1Pipe1 = new namespace.Pipe({
+    source: {
+      id: zone1.id,
+      port: "left",
+      anchor: { name: "left", args: { rotate: true, dx: 10 } },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: tank1.id,
+      anchor: { name: "bottomLeft", args: { dy: -30 } },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  zone1Pipe1.addTo(graph);
+
+  const join1Pipe1 = new namespace.Pipe({
+    source: {
+      id: join1.id,
+      anchor: { name: "bottom" },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: join2.id,
+      anchor: { name: "left" },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  join1Pipe1.addTo(graph);
+
+  const join2Pipe1 = new namespace.Pipe({
+    source: {
+      id: join2.id,
+      anchor: { name: "right" },
+      connectionPoint: { name: "anchor" },
+    },
+    target: {
+      id: zone2.id,
+      anchor: { name: "left", args: { dx: 10 } },
+      connectionPoint: { name: "anchor" },
+    },
+  });
+
+  join2Pipe1.addTo(graph);
 });
 </script>
 

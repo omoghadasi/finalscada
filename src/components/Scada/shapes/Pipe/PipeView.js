@@ -12,7 +12,7 @@ export default dia.LinkView.extend({
   confirmUpdate(...args) {
     let flags = dia.LinkView.prototype.confirmUpdate.call(this, ...args);
     if (this.hasFlag(flags, FLOW_FLAG)) {
-      this.updateFlow();
+      // this.updateFlow(); todo badan
       flags = this.removeFlag(flags, FLOW_FLAG);
     }
     return flags;
