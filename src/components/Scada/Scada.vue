@@ -198,6 +198,20 @@ onMounted(() => {
   });
 
   handValve3.addTo(graph);
+
+  // Joins
+
+  const join1 = new namespace.Join({
+    position: { x: 772, y: 460 },
+  });
+
+  join1.addTo(graph);
+
+  const join2 = new namespace.Join({
+    position: { x: 810, y: 605 },
+  });
+
+  join2.addTo(graph);
 });
 </script>
 

@@ -36,20 +36,6 @@ const d = 10;
 const l = (3 * r) / 4;
 const step = 20;
 
-// Joins
-
-const join1 = new Join({
-  position: { x: 772, y: 460 },
-});
-
-join1.addTo(graph);
-
-const join2 = new Join({
-  position: { x: 810, y: 605 },
-});
-
-join2.addTo(graph);
-
 // Pipes
 
 const tank1Pipe1 = new Pipe({
