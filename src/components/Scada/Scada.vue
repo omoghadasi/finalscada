@@ -135,6 +135,28 @@ onMounted(() => {
   });
 
   controlValve2.addTo(graph);
+
+  // Zones
+
+  const zone1 = new namespace.Zone({
+    position: { x: 50, y: 600 },
+    attrs: {
+      label: {
+        text: "Zone 1",
+      },
+    },
+  });
+
+  const zone2 = new namespace.Zone({
+    position: { x: 865, y: 600 },
+    attrs: {
+      label: {
+        text: "Zone 2",
+      },
+    },
+  });
+
+  graph.addCells([zone1, zone2]);
 });
 </script>
 
