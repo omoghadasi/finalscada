@@ -35,6 +35,6 @@ export default dia.ElementView.extend({
 
   togglePower() {
     const { model } = this;
-    this.getSpinAnimation().playbackRate = model.power;
+    // this.getSpinAnimation().playbackRate = model.power; todo badan
   },
 });

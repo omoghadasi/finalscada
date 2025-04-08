@@ -83,6 +83,32 @@ onMounted(() => {
   });
 
   tank2.addTo(graph);
+
+  // Pumps
+
+  const pump1 = new namespace.Pump({
+    position: { x: 460, y: 250 },
+    attrs: {
+      label: {
+        text: "Pump 1",
+      },
+    },
+  });
+
+  pump1.addTo(graph);
+  pump1.power = 1;
+
+  const pump2 = new namespace.Pump({
+    position: { x: 460, y: 450 },
+    attrs: {
+      label: {
+        text: "Pump 2",
+      },
+    },
+  });
+
+  pump2.addTo(graph);
+  pump2.power = 0;
 });
 </script>
 

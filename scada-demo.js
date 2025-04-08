@@ -36,64 +36,6 @@ const d = 10;
 const l = (3 * r) / 4;
 const step = 20;
 
-// Tanks
-
-const tank1 = new LiquidTank({
-  position: { x: 50, y: 250 },
-});
-const panel1 = new Panel({
-  position: { x: 70, y: 300 },
-});
-
-// When the tank level changes, update the panel level and color.
-panel1.listenTo(tank1, "change:level", (_, level) => {
-  const color =
-    level > 80
-      ? MAX_LIQUID_COLOR
-      : level < 20
-      ? MIN_LIQUID_COLOR
-      : LIQUID_COLOR;
-  panel1.set({ level, color });
-});
-
-tank1.addTo(graph);
-panel1.addTo(graph);
-tank1.embed(panel1);
-
-// Tank 2
-
-const tank2 = new ConicTank({
-  position: { x: 820, y: 200 },
-});
-
-tank2.addTo(graph);
-
-// Pumps
-
-const pump1 = new Pump({
-  position: { x: 460, y: 250 },
-  attrs: {
-    label: {
-      text: "Pump 1",
-    },
-  },
-});
-
-pump1.addTo(graph);
-pump1.power = 1;
-
-const pump2 = new Pump({
-  position: { x: 460, y: 450 },
-  attrs: {
-    label: {
-      text: "Pump 2",
-    },
-  },
-});
-
-pump2.addTo(graph);
-pump2.power = 0;
-
 // CTRL Valves
 
 const controlValve1 = new ControlValve({
