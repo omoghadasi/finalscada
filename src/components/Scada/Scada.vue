@@ -450,6 +450,17 @@ onMounted(() => {
 
   ctrlValve2Pipe1.addTo(graph);
 
+  const progress2 = progress.clone();
+  const gauge2Link = gauge1Link.clone();
+
+  progress2.position(380, 600);
+
+  gauge2Link.source({ id: progress2.id, anchor: { name: "bottom" } });
+  gauge2Link.target({ id: ctrlValve2Pipe1.id });
+
+  progress2.addTo(graph);
+  gauge2Link.addTo(graph);
+
   const zone1Pipe1 = new namespace.Pipe({
     source: {
       id: zone1.id,
@@ -597,8 +608,7 @@ onMounted(() => {
         pressure1 += Math.max(0, tank1Level - 70) * 0.3;
       }
     }
-    // todo badan
-    progress.setProgress(pressure1 / 10 / 10, (pressure1 / 10).toString());
+    progress.setProgress(pressure1 / 10 / 2, (pressure1 / 10).toString());
 
     // Gauge 2
     let pressure2 = ctrlValve2Pipe1Flow * 10;
@@ -608,74 +618,8 @@ onMounted(() => {
         pressure2 += tank1Level * 0.3;
       }
     }
-    // todo badan
-    // gauge2.transition("value", pressure2 / 10);
-    // gauge2.transition(
-    //   "fill",
-    //   pressure2 > 30 ? MAX_PRESSURE_COLOR : PRESSURE_COLOR,
-    //   { valueFunction: util.interpolate.hexColor, duration: 1000 }
-    // );
+    progress2.setProgress(pressure2 / 10, (pressure2 / 10).toString());
   }, 1000);
-
-  // // Charts todo badan
-
-  // const gauge1 = new shapes.chart.Knob({
-  //   position: { x: 380, y: 100 },
-  //   size: { width: 120, height: 120 },
-  //   min: 0,
-  //   max: 10,
-  //   step: 0.1,
-  //   value: 1,
-  //   fill: PRESSURE_COLOR,
-  //   // Historically, the chart shapes are defined without camel-cased attributes
-  //   attrs: {
-  //     root: {
-  //       "font-family": "sans-serif",
-  //     },
-  //   },
-  //   serieDefaults: {
-  //     startAngle: 90,
-  //     label: "Ⓟ bar",
-  //   },
-  //   sliceDefaults: {
-  //     legendLabel: "{value:.1f}",
-  //     onClickEffect: { type: "none" },
-  //   },
-  // });
-
-  // gauge1.addTo(graph);
-
-  // const gauge1Link = new shapes.standard.Link({
-  //   source: { id: gauge1.id, anchor: { name: "bottom" } },
-  //   target: { id: ctrlValve1Pipe1.id },
-  //   z: -1,
-  //   attrs: {
-  //     line: {
-  //       strokeDasharray: "5 5",
-  //       targetMarker: {
-  //         type: "circle",
-  //         r: 12,
-  //         fill: "#eee",
-  //         stroke: "#666",
-  //         "stroke-width": 2,
-  //       },
-  //       stroke: "#aaa",
-  //     },
-  //   },
-  // });
-
-  // gauge1Link.addTo(graph);
-
-  // const gauge2 = gauge1.clone();
-  // const gauge2Link = gauge1Link.clone();
-
-  // gauge2.position(380, 600);
-
-  // gauge2Link.source({ id: gauge2.id, anchor: { name: "bottom" } });
-  // gauge2Link.target({ id: ctrlValve2Pipe1.id });
-
-  // gauge2.addTo(graph);
-  // gauge2Link.addTo(graph);
 });
 </script>
 

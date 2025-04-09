@@ -8,16 +8,16 @@ export default class CircleProgressBar extends dia.Element {
       attrs: {
         backgroundCircle: {
           fill: "transparent",
-          stroke: "#e0e0e0",
+          stroke: "#ccc",
         },
         progressCircle: {
           fill: "transparent",
-          stroke: "#76e5b1",
+          stroke: "#0075f2",
           strokeLinecap: "round",
         },
         label: {
           text: "0",
-          fill: "#6bdba7",
+          fill: "#0075f2",
           fontWeight: "bold",
           textAnchor: "middle",
         },
