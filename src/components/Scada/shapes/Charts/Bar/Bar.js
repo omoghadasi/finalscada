@@ -6,10 +6,6 @@ export default class ChartBar extends dia.Element {
     return {
       ...super.defaults,
       type: "ChartBar",
-      size: {
-        width: 100,
-        height: 100,
-      },
       chartData: {
         labels: ["A", "B", "C"],
         datasets: [
@@ -26,7 +22,7 @@ export default class ChartBar extends dia.Element {
           magnetSelector: "body",
         },
         label: {
-          text: "Tank 2",
+          text: "Chart Bar 1",
           textAnchor: "middle",
           textVerticalAnchor: "bottom",
           x: "calc(w / 2)",
@@ -34,10 +30,6 @@ export default class ChartBar extends dia.Element {
           fontSize: 14,
           fontFamily: "sans-serif",
           fill: "#350100",
-        },
-        chart: {
-          refWidth: "100%",
-          refHeight: "100%",
         },
       },
     };

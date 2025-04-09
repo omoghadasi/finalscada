@@ -22,8 +22,8 @@ export default dia.HighlighterView.extend({
   UPDATE_ATTRIBUTES: ["chartData", "chartOption"],
   tagName: "g",
   children: util.svg/* xml */ `
-      <foreignObject @selector="chart" width="100%" height="100%">
-        <canvas @selector="chartCanvas" width="160" height="100"></canvas>
+      <foreignObject @selector="chart" width="400" height="280">
+        <canvas @selector="chartCanvas" style="background: white;"></canvas>
       </foreignObject>
      `,
   attributes: {

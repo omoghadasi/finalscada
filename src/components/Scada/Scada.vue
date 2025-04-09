@@ -55,27 +55,6 @@ onMounted(() => {
     },
   });
 
-  const chart = new namespace.ChartBar({
-    position: { x: 300 },
-    attrs: {
-      label: {
-        text: "Chart",
-      },
-    },
-    chartData: {
-      labels: ["January", "February", "March", "April"],
-      datasets: [
-        {
-          label: "Sales",
-          data: [15, 30, 40, 60],
-          backgroundColor: "#ff0000",
-        },
-      ],
-    },
-    chartOption: {},
-  });
-  chart.addTo(graph);
-
   // Tanks
 
   const tank1 = new namespace.LiquidTank();
@@ -433,22 +412,44 @@ onMounted(() => {
   join2Pipe1.addTo(graph);
 
   // chatrs
+  const maxPoints = 10;
+  const chartBar = new namespace.ChartBar({
+    position: { x: 250, y: -100 },
+    attrs: {
+      label: {
+        text: "Chart",
+      },
+    },
+    chartData: {
+      labels: ["January", "February", "March", "April"],
+      datasets: [
+        {
+          label: "Sales",
+          data: Array.from({ length: maxPoints }).map((_, i) => ({
+            x: i,
+            y: START_LIQUID,
+          })),
+          backgroundColor: "#2d2d2d",
+        },
+      ],
+    },
+    chartOption: {},
+  });
+  chartBar.addTo(graph);
 
-  // const chartElement = new namespace.ChartElement({
-  //   position: { x: 0, y: 0 },
-  //   size: { width: 300, height: 200 },
-  //   chartData: {
-  //     labels: ["Red", "Blue", "Yellow"],
-  //     datasets: [
-  //       {
-  //         label: "Votes",
-  //         data: [12, 19, 3],
-  //         backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
-  //       },
-  //     ],
-  //   },
-  // });
-  // chartElement.addTo(graph);
+  const tankChartLink = new shapes.standard.Link({
+    source: { id: chartBar.id },
+    target: { id: tank1.id },
+    attrs: {
+      line: {
+        strokeDasharray: "5 5",
+        targetMarker: null,
+        stroke: "#aaa",
+      },
+    },
+  });
+
+  tankChartLink.addTo(graph);
 
   // Transform the paper so that the content fits the viewport
   paper.transformToFitContent({
@@ -582,102 +583,6 @@ onMounted(() => {
   }, 1000);
 
   // // Charts todo badan
-
-  // const maxPoints = 10;
-  // const tankChart = new shapes.chart.Plot({
-  //   position: { x: 50, y: 50 },
-  //   size: { width: 300, height: 150 },
-  //   series: [
-  //     {
-  //       name: "level",
-  //       interpolate: "linear",
-  //       showLegend: false,
-  //       fillPadding: { top: 10 },
-  //       data: Array.from({ length: maxPoints }).map((_, i) => ({
-  //         x: i,
-  //         y: START_LIQUID,
-  //       })),
-  //     },
-  //   ],
-  //   axis: {
-  //     "y-axis": {
-  //       min: 0,
-  //       max: 200,
-  //       ticks: 10,
-  //     },
-  //     "x-axis": {
-  //       tickFormat: function (t) {
-  //         const d = new Date(t * 1000);
-  //         return (
-  //           d.getMinutes().toString().padStart(2, "0") +
-  //           ":" +
-  //           d.getSeconds().toString().padStart(2, "0")
-  //         );
-  //       },
-  //     },
-  //   },
-  //   padding: 0,
-  //   markings: [
-  //     {
-  //       name: "max",
-  //       start: { y: 80 },
-  //     },
-  //     {
-  //       name: "min",
-  //       end: { y: 20 },
-  //     },
-  //   ],
-  //   // Historically, the chart shapes are defined without camel-cased attributes
-  //   attrs: {
-  //     ".": {
-  //       "font-family": "sans-serif",
-  //     },
-  //     ".level path": {
-  //       stroke: "#0075f2",
-  //       "stroke-width": 1,
-  //       "stroke-opacity": "0.8",
-  //       fill: "#0075f2",
-  //       "fill-opacity": "0.3",
-  //     },
-  //     ".marking.max rect": {
-  //       fill: MAX_LIQUID_COLOR,
-  //       height: 3,
-  //     },
-  //     ".marking.min rect": {
-  //       fill: MIN_LIQUID_COLOR,
-  //       height: 3,
-  //     },
-  //     ".point circle": {
-  //       fill: "#0075f2",
-  //       stroke: "none",
-  //       opacity: 1,
-  //     },
-  //     ".y-axis > path, .x-axis > path": {
-  //       stroke: "#131e29",
-  //       "stroke-width": 2,
-  //     },
-  //     ".background rect": {
-  //       fill: "#999",
-  //       "fill-opacity": "0.1",
-  //     },
-  //   },
-  // });
-
-  // tankChart.addTo(graph);
-
-  // const tankChartLink = new shapes.standard.Link({
-  //   source: { id: tankChart.id },
-  //   target: { id: tank1.id },
-  //   attrs: {
-  //     line: {
-  //       strokeDasharray: "5 5",
-  //       targetMarker: null,
-  //       stroke: "#aaa",
-  //     },
-  //   },
-  // });
-
-  // tankChartLink.addTo(graph);
 
   // const gauge1 = new shapes.chart.Knob({
   //   position: { x: 380, y: 100 },
