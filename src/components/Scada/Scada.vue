@@ -410,6 +410,131 @@ onMounted(() => {
 
   join2Pipe1.addTo(graph);
 
+  // Transform the paper so that the content fits the viewport
+  paper.transformToFitContent({
+    useModelGeometry: true,
+    padding: { top: 80, bottom: 10, horizontal: 50 },
+    horizontalAlign: "middle",
+    verticalAlign: "top",
+  });
+
+  // Start rendering the content and highlighters
+  paper.unfreeze();
+
+  // Simulation
+  // A dummy system for the purpose of this demo
+
+  tank1.level = START_LIQUID;
+
+  let extraLiquid = 0;
+
+  setInterval(function () {
+    const tank1Level = tank1.level;
+    const liquidIn = Math.round(Math.random() * 15);
+
+    let newLevel = tank1Level + liquidIn;
+    if (newLevel >= 100) {
+      extraLiquid += newLevel - 100;
+    } else {
+      extraLiquid = 0;
+    }
+
+    // Tank 1 Instrumentation todo badan
+    // tankChart.addPoint(
+    //   { x: tankChart.lastPoint("level").x + 1, y: tank1Level },
+    //   "level",
+    //   { maxLen: maxPoints }
+    // );
+
+    // Tank 1 Pipes
+    const tank1Pipe1Flow = tank1Level > 70 ? 1 : 0;
+    const tank1Pipe2Flow = tank1Level > 0 ? 1 : 0;
+    tank1Pipe1.set("flow", tank1Pipe1Flow);
+    tank1Pipe2.set("flow", tank1Pipe2Flow);
+
+    // CTRL Valve 1
+    const ctrlValve1Open = controlValve1.get("open");
+    const ctrlValve1Pipe1Flow = tank1Pipe1Flow * ctrlValve1Open;
+    ctrlValve1Pipe1.set("flow", ctrlValve1Pipe1Flow);
+    // CTRL Valve 2
+    const ctrlValve2Open = controlValve2.get("open");
+    const ctrlValve2Pipe1Flow = tank1Pipe2Flow * ctrlValve2Open;
+    ctrlValve2Pipe1.set("flow", ctrlValve2Pipe1Flow);
+
+    // Pump 1
+    const pump1Power = pump1.power;
+    const pump1Pipe1Flow = ctrlValve1Pipe1Flow * (1 + 2 * pump1Power);
+    pump1Pipe1.set("flow", pump1Pipe1Flow);
+
+    // Pump 2
+    const pump2Power = pump2.power;
+    const pump2Pipe1Flow = ctrlValve2Pipe1Flow * (1 + 2 * pump2Power);
+    pump2Pipe1.set("flow", pump2Pipe1Flow);
+
+    // Hand Valve 2
+    const handValve2Open = Number(handValve2.get("open"));
+    const handValve2Pipe1Flow = pump1Pipe1Flow * handValve2Open;
+    valve2Pipe1.set("flow", handValve2Pipe1Flow);
+
+    // Hand Valve 3
+    const handValve3Open = Number(handValve3.get("open"));
+    const handValve3Pipe1Flow = pump2Pipe1Flow * handValve3Open;
+    valve3Pipe1.set("flow", handValve3Pipe1Flow);
+
+    // Join 1
+    const join1Pipe1Flow = handValve2Pipe1Flow + handValve3Pipe1Flow;
+    join1Pipe1.set("flow", join1Pipe1Flow);
+
+    // Tank 2
+    const tank2Pipe1Flow = 0.5; // constant flow
+    tank2Pipe1.set("flow", tank2Pipe1Flow);
+
+    // Hand Valve 1
+    const handValve1Open = Number(handValve1.get("open"));
+    const handValve1Pipe1Flow = tank2Pipe1Flow * handValve1Open;
+    valve1Pipe1.set("flow", handValve1Pipe1Flow);
+
+    // Join 2
+    const join2Pipe1Flow = join1Pipe1Flow + handValve1Pipe1Flow;
+    join2Pipe1.set("flow", join2Pipe1Flow);
+
+    // Tank1
+    const liquidOut = join2Pipe1Flow * 4;
+    tank1.level = tank1Level + liquidIn - liquidOut;
+
+    // Gauge 1
+    let pressure1 = ctrlValve1Pipe1Flow * 10;
+    if (pressure1 > 0) {
+      pressure1 += Math.min(30, extraLiquid * Math.max(1.1 - handValve2Open));
+      if (handValve2Open === 0) {
+        pressure1 += Math.max(0, tank1Level - 70) * 0.3;
+      }
+    }
+    // todo badan
+    // gauge1.transition("value", pressure1 / 10);
+    // gauge1.transition(
+    //   "fill",
+    //   pressure1 > 30 ? MAX_PRESSURE_COLOR : PRESSURE_COLOR,
+    //   { valueFunction: util.interpolate.hexColor, duration: 1000 }
+    // );
+
+    // Gauge 2
+    let pressure2 = ctrlValve2Pipe1Flow * 10;
+    if (pressure2 > 0) {
+      pressure2 += Math.min(30, extraLiquid * Math.max(1.1 - handValve3Open));
+      if (handValve3Open === 0) {
+        pressure2 += tank1Level * 0.3;
+      }
+    }
+    // todo badan
+    // gauge2.transition("value", pressure2 / 10);
+    // gauge2.transition(
+    //   "fill",
+    //   pressure2 > 30 ? MAX_PRESSURE_COLOR : PRESSURE_COLOR,
+    //   { valueFunction: util.interpolate.hexColor, duration: 1000 }
+    // );
+  }, 1000);
+
   // // Charts todo badan
 
   // const maxPoints = 10;
