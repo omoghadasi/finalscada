@@ -55,6 +55,27 @@ onMounted(() => {
     },
   });
 
+  const chart = new namespace.ChartBar({
+    position: { x: 300 },
+    attrs: {
+      label: {
+        text: "Chart",
+      },
+    },
+    chartData: {
+      labels: ["January", "February", "March", "April"],
+      datasets: [
+        {
+          label: "Sales",
+          data: [15, 30, 40, 60],
+          backgroundColor: "#ff0000",
+        },
+      ],
+    },
+    chartOption: {},
+  });
+  chart.addTo(graph);
+
   // Tanks
 
   const tank1 = new namespace.LiquidTank();
@@ -410,6 +431,24 @@ onMounted(() => {
   });
 
   join2Pipe1.addTo(graph);
+
+  // chatrs
+
+  // const chartElement = new namespace.ChartElement({
+  //   position: { x: 0, y: 0 },
+  //   size: { width: 300, height: 200 },
+  //   chartData: {
+  //     labels: ["Red", "Blue", "Yellow"],
+  //     datasets: [
+  //       {
+  //         label: "Votes",
+  //         data: [12, 19, 3],
+  //         backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+  //       },
+  //     ],
+  //   },
+  // });
+  // chartElement.addTo(graph);
 
   // Transform the paper so that the content fits the viewport
   paper.transformToFitContent({

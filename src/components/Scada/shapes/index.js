@@ -11,6 +11,7 @@ import PipeView from "./Pipe/PipeView";
 import Pump from "./Pump/Pump";
 import PumpView from "./Pump/PumpView";
 import Zone from "./Zone/Zone";
+import Charts from "./Charts";
 
 export default {
   ConicTank,
@@ -26,4 +27,5 @@ export default {
   Pump,
   PumpView,
   Zone,
+  ...Charts,
 };

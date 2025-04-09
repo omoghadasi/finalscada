@@ -1,12 +1,14 @@
 import PumpControl from "./PumpControl";
 import SliderValveControl from "./SliderValveControl";
 import ToggleValveControl from "./ToggleValveControl";
+import ChartControler from "./ChartBarControler";
 
 export default {
   controllers: {
     PumpControl,
     SliderValveControl,
     ToggleValveControl,
+    ChartControler,
   },
   initControls: (paper) => {
     const graph = paper.model;
@@ -22,6 +24,9 @@ export default {
           break;
         case "Pump":
           PumpControl.add(cell.findView(paper), "root", "selection");
+          break;
+        case "ChartBar":
+          ChartControler.add(cell.findView(paper), "root", "chartCanvas");
           break;
       }
     });
