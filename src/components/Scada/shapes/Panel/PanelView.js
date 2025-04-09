@@ -12,7 +12,7 @@ export default dia.ElementView.extend({
   confirmUpdate(...args) {
     let flags = dia.ElementView.prototype.confirmUpdate.call(this, ...args);
     if (this.hasFlag(flags, LEVEL_FLAG)) {
-      // this.updateLevel(); todo enable
+      this.updateLevel();
       flags = this.removeFlag(flags, LEVEL_FLAG);
     }
     return flags;
@@ -22,10 +22,9 @@ export default dia.ElementView.extend({
     const { model } = this;
     const level = Math.max(0, Math.min(100, model.get("level") || 0));
     const color = model.get("color") || "red";
-    const [liquidEl] = this.findBySelector("liquid");
-    console.log(liquidEl);
+    const liquidEl = this.selectors.liquid;
 
-    const [windowEl] = this.findBySelector("frame");
+    const windowEl = this.selectors.frame;
     const windowHeight = Number(windowEl.getAttribute("height"));
     const height = Math.round((windowHeight * level) / 100);
     liquidEl.animate(
