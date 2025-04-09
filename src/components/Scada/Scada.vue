@@ -1,8 +1,9 @@
 <script setup>
 import { ref, onMounted, reactive, toRaw } from "vue";
 import { dia, shapes } from "@joint/core";
-const jointEl = ref("jointEl");
 import CustomShapes from "./shapes";
+import { initControls } from "./controller";
+const jointEl = ref("jointEl");
 
 const namespace = {
   ...shapes,
@@ -422,117 +423,10 @@ onMounted(() => {
   paper.unfreeze();
 
   // Controls
-  // A custom highlighters using the foreignObject element to embed HTML form controls
-  // The styling is done in CSS
-
-  const PumpControl = dia.HighlighterView.extend({
-    UPDATE_ATTRIBUTES: ["power"],
-    tagName: "g",
-    children: util.svg/* xml */ `
-         <foreignObject width="20" height="20">
-             <div class="jj-checkbox" xmlns="http://www.w3.org/1999/xhtml">
-                 <input @selector="input" class="jj-checkbox-input" type="checkbox" style="width: 14px; height: 14px; box-sizing: border-box; margin: 2px;"/>
-             </div>
-         </foreignObject>
-     `,
-    events: {
-      "change input": "onChange",
-    },
-    attributes: {
-      transform: "translate(5, 5)",
-    },
-    highlight: function (cellView) {
-      this.renderChildren();
-      this.childNodes.input.checked = Boolean(cellView.model.power);
-    },
-    onChange: function (evt) {
-      this.cellView.model.power = evt.target.checked ? 1 : 0;
-    },
-  });
-
-  const ToggleValveControl = dia.HighlighterView.extend({
-    UPDATE_ATTRIBUTES: ["open"],
-    children: util.svg/* xml */ `
-         <foreignObject width="100" height="50">
-             <div class="jj-switch" xmlns="http://www.w3.org/1999/xhtml">
-                 <div @selector="label" class="jj-switch-label" style=""></div>
-                 <button @selector="buttonOn" class="jj-switch-on">open</button>
-                 <button @selector="buttonOff" class="jj-switch-off">close</button>
-             </div>
-         </foreignObject>
-     `,
-    events: {
-      "click button": "onButtonClick",
-    },
-    highlight: function (cellView) {
-      this.renderChildren();
-      const { model } = cellView;
-      const { el, childNodes } = this;
-      const size = model.size();
-      const isOpen = model.get("open");
-      el.setAttribute(
-        "transform",
-        `translate(${size.width / 2 - 50}, ${size.height + 10})`
-      );
-      childNodes.buttonOn.disabled = !isOpen;
-      childNodes.buttonOff.disabled = isOpen;
-      childNodes.label.textContent = model.attr("label/text");
-    },
-    onButtonClick: function (evt) {
-      const { model } = this.cellView;
-      const isOpen = model.get("open");
-      model.set("open", !isOpen);
-    },
-  });
-
-  const SliderValveControl = dia.HighlighterView.extend({
-    UPDATE_ATTRIBUTES: ["open"],
-    children: util.svg/* xml */ `
-         <foreignObject width="100" height="60">
-             <div class="jj-slider" xmlns="http://www.w3.org/1999/xhtml">
-                 <div @selector="label" class="jj-slider-label" style="">Valve 4</div>
-                 <input @selector="slider" class="jj-slider-input" type="range" min="0" max="100" step="25" style="width:100%;"/>
-                 <output @selector="value" class="jj-slider-output"></output>
-             </div>
-         </foreignObject>
-     `,
-    events: {
-      "input input": "onInput",
-    },
-    highlight: function (cellView) {
-      const { name = "" } = this.options;
-      const { model } = cellView;
-      const size = model.size();
-      if (!this.childNodes) {
-        // Render the slider only once to allow the user to drag it.
-        this.renderChildren();
-        this.childNodes.slider.value = model.get("open") * 100;
-      }
-      this.el.setAttribute(
-        "transform",
-        `translate(${size.width / 2 - 50}, ${size.height + 10})`
-      );
-      this.childNodes.label.textContent = name;
-      this.childNodes.value.textContent = this.getSliderTextValue(
-        model.get("open")
-      );
-    },
-    getSliderTextValue: function (value = 0) {
-      if (value === 0) {
-        return "Closed";
-      }
-      if (value === 1) {
-        return "Open";
-      }
-      return `${value * 100}% open`;
-    },
-    onInput: function (evt) {
-      this.cellView.model.set("open", Number(evt.target.value) / 100);
-    },
-  });
 
   // Create all controls and add them to the graph
-  addControls(paper);
+  // addControls(paper);
+  initControls(paper);
 
   // Simulation
   // A dummy system for the purpose of this demo
