@@ -1,3 +1,4 @@
+import { dia, util } from "@joint/core";
 export default dia.HighlighterView.extend({
   UPDATE_ATTRIBUTES: ["open"],
   children: util.svg/* xml */ `

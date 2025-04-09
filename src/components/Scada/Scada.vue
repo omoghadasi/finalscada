@@ -2,7 +2,7 @@
 import { ref, onMounted, reactive, toRaw } from "vue";
 import { dia, shapes } from "@joint/core";
 import CustomShapes from "./shapes";
-import { initControls } from "./controller";
+import Controllers from "./controller";
 const jointEl = ref("jointEl");
 
 const namespace = {
@@ -426,7 +426,7 @@ onMounted(() => {
 
   // Create all controls and add them to the graph
   // addControls(paper);
-  initControls(paper);
+  Controllers.initControls(paper);
 
   // Simulation
   // A dummy system for the purpose of this demo
