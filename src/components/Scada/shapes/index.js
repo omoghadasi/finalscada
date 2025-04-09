@@ -12,6 +12,7 @@ import Pump from "./Pump/Pump";
 import PumpView from "./Pump/PumpView";
 import Zone from "./Zone/Zone";
 import Charts from "./Charts";
+import CircleProgressBar from "./CircleProgressBar/CircleProgressBar";
 
 export default {
   ConicTank,
@@ -28,4 +29,5 @@ export default {
   PumpView,
   Zone,
   ...Charts,
+  CircleProgressBar,
 };

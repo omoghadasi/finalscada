@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, reactive, toRaw } from "vue";
-import { dia, shapes } from "@joint/core";
+import { dia, shapes, util } from "@joint/core";
 import CustomShapes from "./shapes";
 import Controllers from "./controller";
 const jointEl = ref("jointEl");
@@ -330,6 +330,32 @@ onMounted(() => {
 
   ctrlValve1Pipe1.addTo(graph);
 
+  const progress = new namespace.CircleProgressBar();
+  progress.updateSize({ width: 75, height: 75 });
+  progress.position(400, 150);
+  progress.addTo(graph);
+
+  const gauge1Link = new shapes.standard.Link({
+    source: { id: progress.id },
+    target: { id: ctrlValve1Pipe1.id },
+    z: -1,
+    attrs: {
+      line: {
+        strokeDasharray: "5 5",
+        targetMarker: {
+          type: "circle",
+          r: 12,
+          fill: "#eee",
+          stroke: "#666",
+          "stroke-width": 2,
+        },
+        stroke: "#aaa",
+      },
+    },
+  });
+
+  gauge1Link.addTo(graph);
+
   const valve2Pipe1 = new namespace.Pipe({
     source: {
       id: handValve2.id,
@@ -507,13 +533,6 @@ onMounted(() => {
       extraLiquid = 0;
     }
 
-    // Tank 1 Instrumentation todo badan
-    // tankChart.addPoint(
-    //   { x: tankChart.lastPoint("level").x + 1, y: tank1Level },
-    //   "level",
-    //   { maxLen: maxPoints }
-    // );
-
     // Tank 1 Pipes
     const tank1Pipe1Flow = tank1Level > 70 ? 1 : 0;
     const tank1Pipe2Flow = tank1Level > 0 ? 1 : 0;
@@ -579,12 +598,7 @@ onMounted(() => {
       }
     }
     // todo badan
-    // gauge1.transition("value", pressure1 / 10);
-    // gauge1.transition(
-    //   "fill",
-    //   pressure1 > 30 ? MAX_PRESSURE_COLOR : PRESSURE_COLOR,
-    //   { valueFunction: util.interpolate.hexColor, duration: 1000 }
-    // );
+    progress.setProgress(pressure1 / 10 / 10, (pressure1 / 10).toString());
 
     // Gauge 2
     let pressure2 = ctrlValve2Pipe1Flow * 10;
