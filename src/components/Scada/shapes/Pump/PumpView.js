@@ -21,7 +21,7 @@ export default dia.ElementView.extend({
   getSpinAnimation() {
     let { spinAnimation } = this;
     if (spinAnimation) return spinAnimation;
-    const [rotorEl] = this.findBySelector("rotor");
+    const rotorEl = this.selectors.rotor;
     // It's important to use start and end frames to make it work in Safari.
     const keyframes = { transform: ["rotate(0deg)", "rotate(360deg)"] };
     spinAnimation = rotorEl.animate(keyframes, {
@@ -35,6 +35,6 @@ export default dia.ElementView.extend({
 
   togglePower() {
     const { model } = this;
-    // this.getSpinAnimation().playbackRate = model.power; todo badan
+    this.getSpinAnimation().playbackRate = model.power;
   },
 });
