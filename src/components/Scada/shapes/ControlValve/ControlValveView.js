@@ -13,9 +13,9 @@ export default dia.ElementView.extend({
 
   confirmUpdate(...args) {
     let flags = dia.ElementView.prototype.confirmUpdate.call(this, ...args);
-    // this.animateLiquid(); todo badan
+    this.animateLiquid();
     if (this.hasFlag(flags, OPEN_FLAG)) {
-      // this.updateCover(); todo badan
+      this.updateCover();
       flags = this.removeFlag(flags, OPEN_FLAG);
     }
     return flags;
@@ -24,8 +24,8 @@ export default dia.ElementView.extend({
   updateCover() {
     const { model } = this;
     const opening = Math.max(0, Math.min(1, model.get("open") || 0));
-    const [coverEl] = this.findBySelector("cover");
-    const [coverFrameEl] = this.findBySelector("coverFrame");
+    const coverEl = this.selectors.cover;
+    const coverFrameEl = this.selectors.coverFrame;
     const frameWidth =
       Number(coverFrameEl.getAttribute("width")) - this.framePadding;
     const width = Math.round(frameWidth * (1 - opening));
@@ -42,7 +42,7 @@ export default dia.ElementView.extend({
 
   animateLiquid() {
     if (this.liquidAnimation) return;
-    const [liquidEl] = this.findBySelector("liquid");
+    const liquidEl = this.selectors.liquid;
     this.liquidAnimation = liquidEl.animate(
       {
         // 24 matches the length of the liquid path
