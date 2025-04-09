@@ -77,6 +77,60 @@ onMounted(() => {
   panel1.addTo(graph);
   tank1.embed(panel1);
 
+  const maxPoints = 10;
+
+  let tank1ChartData = [1, 3, 3, 1, 5];
+  const chartBar = new namespace.ChartBar({
+    position: { x: 250, y: -100 },
+    attrs: {
+      label: {
+        text: "Chart",
+      },
+    },
+    chartData: {
+      labels: tank1ChartData,
+      datasets: [
+        {
+          label: "حجم تانک",
+          data: tank1ChartData,
+          backgroundColor: "#2d2d2d",
+        },
+      ],
+    },
+    chartOption: {},
+  });
+  chartBar.addTo(graph);
+
+  // When the tank level changes, update the panel level and color.
+  chartBar.listenTo(tank1, "change:level", (_, level) => {
+    tank1ChartData.push(level);
+    tank1ChartData = tank1ChartData.slice(-5);
+    chartBar.set("chartData", {
+      labels: tank1ChartData,
+      datasets: [
+        {
+          label: "حجم تانک",
+          data: tank1ChartData,
+          backgroundColor: "#2d2d2d",
+        },
+      ],
+    });
+  });
+
+  const tankChartLink = new shapes.standard.Link({
+    source: { id: chartBar.id },
+    target: { id: tank1.id },
+    attrs: {
+      line: {
+        strokeDasharray: "5 5",
+        targetMarker: null,
+        stroke: "#aaa",
+      },
+    },
+  });
+
+  tankChartLink.addTo(graph);
+
   // Tank 2
 
   const tank2 = new namespace.ConicTank({
@@ -412,44 +466,6 @@ onMounted(() => {
   join2Pipe1.addTo(graph);
 
   // chatrs
-  const maxPoints = 10;
-  const chartBar = new namespace.ChartBar({
-    position: { x: 250, y: -100 },
-    attrs: {
-      label: {
-        text: "Chart",
-      },
-    },
-    chartData: {
-      labels: ["January", "February", "March", "April"],
-      datasets: [
-        {
-          label: "Sales",
-          data: Array.from({ length: maxPoints }).map((_, i) => ({
-            x: i,
-            y: START_LIQUID,
-          })),
-          backgroundColor: "#2d2d2d",
-        },
-      ],
-    },
-    chartOption: {},
-  });
-  chartBar.addTo(graph);
-
-  const tankChartLink = new shapes.standard.Link({
-    source: { id: chartBar.id },
-    target: { id: tank1.id },
-    attrs: {
-      line: {
-        strokeDasharray: "5 5",
-        targetMarker: null,
-        stroke: "#aaa",
-      },
-    },
-  });
-
-  tankChartLink.addTo(graph);
 
   // Transform the paper so that the content fits the viewport
   paper.transformToFitContent({
