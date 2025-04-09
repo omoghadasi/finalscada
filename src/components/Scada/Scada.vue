@@ -409,6 +409,162 @@ onMounted(() => {
   });
 
   join2Pipe1.addTo(graph);
+
+  // // Charts todo badan
+
+  // const maxPoints = 10;
+  // const tankChart = new shapes.chart.Plot({
+  //   position: { x: 50, y: 50 },
+  //   size: { width: 300, height: 150 },
+  //   series: [
+  //     {
+  //       name: "level",
+  //       interpolate: "linear",
+  //       showLegend: false,
+  //       fillPadding: { top: 10 },
+  //       data: Array.from({ length: maxPoints }).map((_, i) => ({
+  //         x: i,
+  //         y: START_LIQUID,
+  //       })),
+  //     },
+  //   ],
+  //   axis: {
+  //     "y-axis": {
+  //       min: 0,
+  //       max: 200,
+  //       ticks: 10,
+  //     },
+  //     "x-axis": {
+  //       tickFormat: function (t) {
+  //         const d = new Date(t * 1000);
+  //         return (
+  //           d.getMinutes().toString().padStart(2, "0") +
+  //           ":" +
+  //           d.getSeconds().toString().padStart(2, "0")
+  //         );
+  //       },
+  //     },
+  //   },
+  //   padding: 0,
+  //   markings: [
+  //     {
+  //       name: "max",
+  //       start: { y: 80 },
+  //     },
+  //     {
+  //       name: "min",
+  //       end: { y: 20 },
+  //     },
+  //   ],
+  //   // Historically, the chart shapes are defined without camel-cased attributes
+  //   attrs: {
+  //     ".": {
+  //       "font-family": "sans-serif",
+  //     },
+  //     ".level path": {
+  //       stroke: "#0075f2",
+  //       "stroke-width": 1,
+  //       "stroke-opacity": "0.8",
+  //       fill: "#0075f2",
+  //       "fill-opacity": "0.3",
+  //     },
+  //     ".marking.max rect": {
+  //       fill: MAX_LIQUID_COLOR,
+  //       height: 3,
+  //     },
+  //     ".marking.min rect": {
+  //       fill: MIN_LIQUID_COLOR,
+  //       height: 3,
+  //     },
+  //     ".point circle": {
+  //       fill: "#0075f2",
+  //       stroke: "none",
+  //       opacity: 1,
+  //     },
+  //     ".y-axis > path, .x-axis > path": {
+  //       stroke: "#131e29",
+  //       "stroke-width": 2,
+  //     },
+  //     ".background rect": {
+  //       fill: "#999",
+  //       "fill-opacity": "0.1",
+  //     },
+  //   },
+  // });
+
+  // tankChart.addTo(graph);
+
+  // const tankChartLink = new shapes.standard.Link({
+  //   source: { id: tankChart.id },
+  //   target: { id: tank1.id },
+  //   attrs: {
+  //     line: {
+  //       strokeDasharray: "5 5",
+  //       targetMarker: null,
+  //       stroke: "#aaa",
+  //     },
+  //   },
+  // });
+
+  // tankChartLink.addTo(graph);
+
+  // const gauge1 = new shapes.chart.Knob({
+  //   position: { x: 380, y: 100 },
+  //   size: { width: 120, height: 120 },
+  //   min: 0,
+  //   max: 10,
+  //   step: 0.1,
+  //   value: 1,
+  //   fill: PRESSURE_COLOR,
+  //   // Historically, the chart shapes are defined without camel-cased attributes
+  //   attrs: {
+  //     root: {
+  //       "font-family": "sans-serif",
+  //     },
+  //   },
+  //   serieDefaults: {
+  //     startAngle: 90,
+  //     label: "Ⓟ bar",
+  //   },
+  //   sliceDefaults: {
+  //     legendLabel: "{value:.1f}",
+  //     onClickEffect: { type: "none" },
+  //   },
+  // });
+
+  // gauge1.addTo(graph);
+
+  // const gauge1Link = new shapes.standard.Link({
+  //   source: { id: gauge1.id, anchor: { name: "bottom" } },
+  //   target: { id: ctrlValve1Pipe1.id },
+  //   z: -1,
+  //   attrs: {
+  //     line: {
+  //       strokeDasharray: "5 5",
+  //       targetMarker: {
+  //         type: "circle",
+  //         r: 12,
+  //         fill: "#eee",
+  //         stroke: "#666",
+  //         "stroke-width": 2,
+  //       },
+  //       stroke: "#aaa",
+  //     },
+  //   },
+  // });
+
+  // gauge1Link.addTo(graph);
+
+  // const gauge2 = gauge1.clone();
+  // const gauge2Link = gauge1Link.clone();
+
+  // gauge2.position(380, 600);
+
+  // gauge2Link.source({ id: gauge2.id, anchor: { name: "bottom" } });
+  // gauge2Link.target({ id: ctrlValve2Pipe1.id });
+
+  // gauge2.addTo(graph);
+  // gauge2Link.addTo(graph);
 });
 </script>
 
