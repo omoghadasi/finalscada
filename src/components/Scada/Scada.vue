@@ -58,7 +58,7 @@ onMounted(() => {
 
   const tank1 = new namespace.LiquidTank();
   const panel1 = new namespace.Panel({
-    position: { x: 70, y: 300 },
+    position: { x: 30, y: 50 },
   });
 
   // When the tank level changes, update the panel level and color.
