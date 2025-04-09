@@ -12,7 +12,7 @@ export default dia.LinkView.extend({
   confirmUpdate(...args) {
     let flags = dia.LinkView.prototype.confirmUpdate.call(this, ...args);
     if (this.hasFlag(flags, FLOW_FLAG)) {
-      // this.updateFlow(); todo badan
+      this.updateFlow();
       flags = this.removeFlag(flags, FLOW_FLAG);
     }
     return flags;
@@ -21,7 +21,7 @@ export default dia.LinkView.extend({
   getFlowAnimation() {
     let { flowAnimation } = this;
     if (flowAnimation) return flowAnimation;
-    const [liquidEl] = this.findBySelector("liquid");
+    const liquidEl = this.selectors.liquid;
     // stroke-dashoffset = sum(stroke-dasharray) * n;
     // 90 = 10 + 20 + 10 + 20 + 10 + 20
     const keyframes = { strokeDashoffset: [90, 0] };
@@ -38,7 +38,7 @@ export default dia.LinkView.extend({
     const { model } = this;
     const flowRate = model.get("flow") || 0;
     this.getFlowAnimation().playbackRate = flowRate;
-    const [liquidEl] = this.findBySelector("liquid");
+    const liquidEl = this.selectors.liquid;
     liquidEl.style.stroke = flowRate === 0 ? "#ccc" : "";
   },
 });
