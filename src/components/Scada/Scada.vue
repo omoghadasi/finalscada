@@ -79,7 +79,8 @@ onMounted(() => {
 
   const maxPoints = 10;
 
-  let tank1ChartData = [1, 3, 3, 1, 5];
+  let tank1ChartData = [];
+  let tank1ChartTime = [];
   const chartBar = new namespace.ChartBar({
     position: { x: 250, y: -100 },
     attrs: {
@@ -87,6 +88,7 @@ onMounted(() => {
         text: "Chart",
       },
     },
+    keepItem: 10,
     chartData: {
       labels: tank1ChartData,
       datasets: [
@@ -100,21 +102,24 @@ onMounted(() => {
     chartOption: {},
   });
   chartBar.addTo(graph);
+  chartBar.set("chartData", {
+    labels: tank1ChartTime,
+    datasets: [
+      {
+        label: "حجم تانک",
+        data: tank1ChartData,
+        backgroundColor: "#2d2d2d",
+      },
+    ],
+  });
 
   // When the tank level changes, update the panel level and color.
   chartBar.listenTo(tank1, "change:level", (_, level) => {
-    tank1ChartData.push(level);
-    tank1ChartData = tank1ChartData.slice(-5);
-    chartBar.set("chartData", {
-      labels: tank1ChartData,
-      datasets: [
-        {
-          label: "حجم تانک",
-          data: tank1ChartData,
-          backgroundColor: "#2d2d2d",
-        },
-      ],
-    });
+    const label =
+      new Date().getMinutes().toString() +
+      ":" +
+      new Date().getSeconds().toString();
+    chartBar.set("singleData", { label, data: level });
   });
 
   const tankChartLink = new shapes.standard.Link({

@@ -1,11 +1,10 @@
 import { dia, util } from "@joint/core";
-import { Chart } from "chart.js";
-
 export default class ChartBar extends dia.Element {
   defaults() {
     return {
       ...super.defaults,
       type: "ChartBar",
+      chart: null,
       chartData: {
         labels: ["A", "B", "C"],
         datasets: [
@@ -17,6 +16,8 @@ export default class ChartBar extends dia.Element {
         ],
       },
       chartOpion: {},
+      singleData: null,
+      keepItem: 5,
       attrs: {
         root: {
           magnetSelector: "body",
@@ -42,7 +43,7 @@ export default class ChartBar extends dia.Element {
   }
 
   get chartData() {
-    return this.get("chartData") || 0;
+    return this.get("chartData") || null;
   }
 
   set chartData(value) {
@@ -50,10 +51,31 @@ export default class ChartBar extends dia.Element {
   }
 
   get chartOpion() {
-    return this.get("chartData") || 0;
+    return this.get("chartData") || null;
   }
 
   set chartOpion(value) {
     this.set("chartData", value);
+  }
+  get singleData() {
+    return this.get("singleData") || null;
+  }
+
+  set singleData(value) {
+    this.set("singleData", value);
+  }
+  get chart() {
+    return this.get("chart") || null;
+  }
+
+  set chart(value) {
+    this.set("chart", value);
+  }
+  get keepItem() {
+    return this.get("keepItem") || null;
+  }
+
+  set keepItem(value) {
+    this.set("keepItem", value);
   }
 }
