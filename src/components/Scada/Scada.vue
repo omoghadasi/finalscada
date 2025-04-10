@@ -55,6 +55,21 @@ onMounted(() => {
     },
   });
 
+  const button = new namespace.ButtonElement({ position: { x: 100, y: 100 } });
+  button.on("button:click", () => {
+    console.log("Button clicked with event!");
+  });
+  button.addTo(graph);
+
+  const form = new namespace.FormElement({
+    position: { x: 100, y: 200 },
+  });
+
+  form.on("form:submit", (data) => {
+    console.log("Form submitted:", data);
+  });
+
+  form.addTo(graph);
   // Tanks
 
   const tank1 = new namespace.LiquidTank();
