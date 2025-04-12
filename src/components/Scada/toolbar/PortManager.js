@@ -27,8 +27,22 @@ export default class PortManager {
       { value: "inout", label: "Input/Output" },
     ];
 
+    // تعریف انواع لینک
+    const linkTypes = [
+      { value: "default", label: "Default" },
+      { value: "pipe", label: "Pipe" },
+      { value: "electrical", label: "Electrical" },
+      { value: "data", label: "Data" },
+      { value: "signal", label: "Signal" },
+    ];
+
     // ایجاد HTML برای گزینه‌های نوع پورت
     const portTypeOptions = portTypes
+      .map((opt) => `<option value="${opt.value}">${opt.label}</option>`)
+      .join("");
+
+    // ایجاد HTML برای گزینه‌های نوع لینک
+    const linkTypeOptions = linkTypes
       .map((opt) => `<option value="${opt.value}">${opt.label}</option>`)
       .join("");
 
@@ -43,7 +57,12 @@ export default class PortManager {
           <strong>Existing Ports:</strong>
           <ul style="margin-top: 5px; padding-left: 20px;">
             ${existingPorts
-              .map((port) => `<li>${port.id} (${port.group || "default"})</li>`)
+              .map(
+                (port) =>
+                  `<li>${port.id} (${port.group || "default"}) - Link Type: ${
+                    port.linkType || "default"
+                  }</li>`
+              )
               .join("")}
           </ul>
         </div>
@@ -66,6 +85,12 @@ export default class PortManager {
           </select>
         </div>
         <div style="text-align: left; margin-bottom: 15px;">
+          <label for="link-type" style="display: block; margin-bottom: 5px; font-weight: bold;">Link Type:</label>
+          <select id="link-type" class="swal2-select" style="width: 100%;">
+            ${linkTypeOptions}
+          </select>
+        </div>
+        <div style="text-align: left; margin-bottom: 15px;">
           <label for="port-position" style="display: block; margin-bottom: 5px; font-weight: bold;">Port Position:</label>
           <select id="port-position" class="swal2-select" style="width: 100%;">
             <option value="left">Left</option>
@@ -85,6 +110,7 @@ export default class PortManager {
       preConfirm: () => {
         const portId = document.getElementById("port-id").value;
         const portType = document.getElementById("port-type").value;
+        const linkType = document.getElementById("link-type").value;
         const portPosition = document.getElementById("port-position").value;
         const portLabel = document.getElementById("port-label").value;
 
@@ -100,15 +126,17 @@ export default class PortManager {
           return false;
         }
 
-        return { portId, portType, portPosition, portLabel };
+        return { portId, portType, linkType, portPosition, portLabel };
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        const { portId, portType, portPosition, portLabel } = result.value;
+        const { portId, portType, linkType, portPosition, portLabel } =
+          result.value;
         this.addPortToElement(
           element,
           portId,
           portType,
+          linkType,
           portPosition,
           portLabel
         );
@@ -121,20 +149,24 @@ export default class PortManager {
    * @param {Object} element - المنت مورد نظر
    * @param {string} portId - شناسه پورت
    * @param {string} portType - نوع پورت (input, output, inout)
+   * @param {string} linkType - نوع لینک (default, pipe, electrical, data, signal)
    * @param {string} position - موقعیت پورت (left, right, top, bottom)
    * @param {string} label - برچسب پورت (اختیاری)
    */
-  addPortToElement(element, portId, portType, position, label) {
-    // تنظیم رنگ پورت بر اساس نوع آن
+  addPortToElement(element, portId, portType, linkType, position, label) {
+    // تنظیم رنگ پورت بر اساس نوع لینک
     let portColor;
-    switch (portType) {
-      case "input":
+    switch (linkType) {
+      case "pipe":
         portColor = "#3498db"; // آبی
         break;
-      case "output":
+      case "electrical":
+        portColor = "#e74c3c"; // قرمز
+        break;
+      case "data":
         portColor = "#2ecc71"; // سبز
         break;
-      case "inout":
+      case "signal":
         portColor = "#9b59b6"; // بنفش
         break;
       default:
@@ -145,6 +177,7 @@ export default class PortManager {
     const portConfig = {
       id: portId,
       group: portType,
+      linkType: linkType, // ذخیره نوع لینک در پورت
       attrs: {
         circle: {
           r: 6,
@@ -180,7 +213,7 @@ export default class PortManager {
     // نمایش پیام موفقیت
     Swal.fire({
       title: "Port Added",
-      text: `Port "${portId}" added to element`,
+      text: `Port "${portId}" (${linkType}) added to element`,
       icon: "success",
       timer: 2000,
       showConfirmButton: false,
@@ -227,6 +260,9 @@ export default class PortManager {
       <div style="display: flex; justify-content: space-between; align-items: center; padding: 8px; border-bottom: 1px solid #eee;">
         <div>
           <strong>${port.id}</strong> (${port.group || "default"})
+          - Link Type: <span style="color: ${this.getLinkTypeColor(
+            port.linkType
+          )}">${port.linkType || "default"}</span>
           ${port.attrs.text?.text ? ` - ${port.attrs.text.text}` : ""}
         </div>
         <button class="delete-port-btn swal2-styled swal2-cancel" data-port-index="${index}" style="padding: 5px 10px; font-size: 12px; margin: 0;">Delete</button>
@@ -291,5 +327,21 @@ export default class PortManager {
         });
       },
     });
+  }
+
+  // متد کمکی برای دریافت رنگ متناسب با نوع لینک
+  getLinkTypeColor(linkType) {
+    switch (linkType) {
+      case "pipe":
+        return "#3498db"; // آبی
+      case "electrical":
+        return "#e74c3c"; // قرمز
+      case "data":
+        return "#2ecc71"; // سبز
+      case "signal":
+        return "#9b59b6"; // بنفش
+      default:
+        return "#7f8c8d"; // خاکستری
+    }
   }
 }
