@@ -3,7 +3,10 @@ import { ref, onMounted, reactive, toRaw } from "vue";
 import { dia, shapes, util } from "@joint/core";
 import CustomShapes from "./shapes";
 import Controllers from "./controller";
-const jointEl = ref("jointEl");
+import ToolbarManager from "./toolbar/ToolbarManager";
+
+const jointEl = ref(null);
+const toolbarEl = ref(null);
 
 const namespace = {
   ...shapes,
@@ -35,7 +38,7 @@ onMounted(() => {
     el: jointEl.value,
     cellViewNamespace: namespace,
     model: graph,
-    width: 1800,
+    width: 1600,
     height: 800,
     gridSize: 10,
     drawGrid: "mesh",
@@ -46,14 +49,19 @@ onMounted(() => {
     frozen: false,
     sorting: dia.Paper.sorting.APPROX,
     background: { color: "#F3F7F6" },
-    // interactive: {
-    //   linkMove: false,
-    //   stopDelegation: false,
-    // },
     defaultAnchor: {
       name: "perpendicular",
     },
   });
+
+  // ایجاد و راه‌اندازی پنل ابزار
+  const toolbarManager = new ToolbarManager(
+    toolbarEl.value,
+    jointEl.value,
+    graph,
+    namespace
+  );
+  toolbarManager.init();
 
   const button = new namespace.ButtonElement({ position: { x: 100, y: 100 } });
   button.on("button:click", () => {
@@ -638,4 +646,45 @@ onMounted(() => {
 });
 </script>
 
-<template><div ref="jointEl"></div></template>
+<template>
+  <div class="scada-container">
+    <div ref="toolbarEl" class="toolbar"></div>
+    <div ref="jointEl" class="canvas"></div>
+  </div>
+</template>
+
+<style scoped>
+.scada-container {
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+.toolbar {
+  width: 200px;
+  height: 100%;
+  background-color: #f0f0f0;
+  border-right: 1px solid #ddd;
+  position: relative;
+  overflow-y: auto;
+}
+
+.canvas {
+  flex: 1;
+  height: 100%;
+}
+
+:deep(.toolbar-item) {
+  margin-bottom: 10px;
+  transition: all 0.2s;
+}
+
+:deep(.toolbar-item:hover) {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+:deep(.toolbar-item .icon) {
+  margin-right: 8px;
+  font-size: 18px;
+}
+</style>
