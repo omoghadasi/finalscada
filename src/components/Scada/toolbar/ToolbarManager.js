@@ -37,6 +37,150 @@ export default class ToolbarManager {
 
     // اضافه کردن رویداد برای تشخیص جابجایی المنت‌ها
     this.setupElementMoveListener();
+
+    // اضافه کردن رویداد کلیک راست
+    this.setupContextMenu();
+  }
+
+  // متد جدید برای تنظیم منوی کلیک راست
+  setupContextMenu() {
+    // ایجاد المنت منو
+    const contextMenu = document.createElement("div");
+    contextMenu.className = "context-menu";
+    contextMenu.style.position = "absolute";
+    contextMenu.style.display = "none";
+    contextMenu.style.backgroundColor = "#fff";
+    contextMenu.style.border = "1px solid #ddd";
+    contextMenu.style.borderRadius = "4px";
+    contextMenu.style.boxShadow = "0 2px 10px rgba(0,0,0,0.2)";
+    contextMenu.style.zIndex = "1000";
+    contextMenu.style.padding = "5px 0";
+    document.body.appendChild(contextMenu);
+
+    // متغیر برای ذخیره المنت انتخاب شده
+    let selectedElement = null;
+
+    // رویداد کلیک راست روی المنت‌ها
+    this.jointEl.addEventListener("contextmenu", (event) => {
+      // جلوگیری از نمایش منوی پیش‌فرض مرورگر
+      event.preventDefault();
+
+      // پنهان کردن منو در ابتدا
+      contextMenu.style.display = "none";
+
+      // بررسی آیا کلیک روی یک المنت انجام شده است
+      const paperOffset = this.jointEl.getBoundingClientRect();
+      const x = event.clientX - paperOffset.left;
+      const y = event.clientY - paperOffset.top;
+
+      // پیدا کردن المنت زیر نقطه کلیک
+      const elementView = this.graph.findModelsFromPoint({ x, y })[0];
+      if (elementView) {
+        selectedElement = elementView;
+
+        // تنظیم موقعیت منو
+        contextMenu.style.left = `${event.clientX}px`;
+        contextMenu.style.top = `${event.clientY}px`;
+
+        // پاک کردن محتوای قبلی منو
+        contextMenu.innerHTML = "";
+
+        // اضافه کردن گزینه‌های منو بر اساس وضعیت المنت
+        if (selectedElement.getParentCell()) {
+          // اگر المنت embed شده باشد، گزینه حذف embed را نمایش می‌دهیم
+          const detachOption = document.createElement("div");
+          detachOption.className = "context-menu-item";
+          detachOption.textContent = "Detach from parent";
+          detachOption.style.padding = "8px 15px";
+          detachOption.style.cursor = "pointer";
+          detachOption.style.transition = "background-color 0.2s";
+
+          detachOption.addEventListener("mouseover", () => {
+            detachOption.style.backgroundColor = "#f0f0f0";
+          });
+
+          detachOption.addEventListener("mouseout", () => {
+            detachOption.style.backgroundColor = "transparent";
+          });
+
+          detachOption.addEventListener("click", () => {
+            this.detachElement(selectedElement);
+            contextMenu.style.display = "none";
+          });
+
+          contextMenu.appendChild(detachOption);
+          contextMenu.style.display = "block";
+        } else {
+          // اگر المنت embed نشده باشد، گزینه‌های دیگر را نمایش می‌دهیم
+          // می‌توانید گزینه‌های دیگر را در اینجا اضافه کنید
+          const infoOption = document.createElement("div");
+          infoOption.className = "context-menu-item";
+          infoOption.textContent = "Element Info";
+          infoOption.style.padding = "8px 15px";
+          infoOption.style.cursor = "pointer";
+          infoOption.style.transition = "background-color 0.2s";
+
+          infoOption.addEventListener("mouseover", () => {
+            infoOption.style.backgroundColor = "#f0f0f0";
+          });
+
+          infoOption.addEventListener("mouseout", () => {
+            infoOption.style.backgroundColor = "transparent";
+          });
+
+          infoOption.addEventListener("click", () => {
+            Swal.fire({
+              title: "Element Info",
+              html: `Type: ${
+                selectedElement.get("type") || selectedElement.attributes.type
+              }<br>
+                     ID: ${selectedElement.id}`,
+              icon: "info",
+            });
+            contextMenu.style.display = "none";
+          });
+
+          contextMenu.appendChild(infoOption);
+          contextMenu.style.display = "block";
+        }
+      }
+    });
+
+    // پنهان کردن منو با کلیک در هر جای دیگر
+    document.addEventListener("click", () => {
+      contextMenu.style.display = "none";
+    });
+  }
+
+  detachElement(element) {
+    const parent = element.getParentCell();
+
+    if (parent) {
+      // ذخیره موقعیت فعلی (نسبی)
+      const currentPos = element.position();
+
+      // محاسبه موقعیت مطلق
+      const parentPos = parent.position();
+      const absoluteX = parentPos.x + currentPos.x;
+      const absoluteY = parentPos.y + currentPos.y;
+
+      // جدا کردن المنت از والد
+      parent.unembed(element);
+
+      // حذف رویدادهای مربوط به والد
+      if (element.get("type") === "Panel") {
+        element.stopListening(parent);
+      }
+
+      // نمایش پیام موفقیت
+      Swal.fire({
+        title: "Success",
+        text: "Element detached successfully",
+        icon: "success",
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    }
   }
 
   // متد جدید برای تنظیم رویداد جابجایی المنت‌ها
