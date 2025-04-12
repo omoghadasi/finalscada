@@ -1,10 +1,12 @@
 import Swal from "sweetalert2";
 import * as joint from "@joint/core";
+import LinkManager from "./LinkManager";
 
 export default class WatcherManager {
   constructor(graph, storeManager) {
     this.graph = graph;
     this.storeManager = storeManager;
+    this.linkManager = new LinkManager(graph);
   }
 
   setupWatcher(panel) {
@@ -384,148 +386,9 @@ export default class WatcherManager {
     }).then((result) => {
       if (result.isConfirmed) {
         const { sourceId, targetId, linkType } = result.value;
-        this.createLink(sourceId, targetId, linkType);
+        this.linkManager.createLink(sourceId, targetId, linkType);
       }
     });
   }
-
-  createLink(sourceId, targetId, linkType) {
-    const source = this.graph.getCell(sourceId);
-    const target = this.graph.getCell(targetId);
-
-    if (!source || !target) {
-      Swal.fire({
-        title: "Error",
-        text: "Source or target element not found",
-        icon: "error",
-      });
-      return;
-    }
-
-    // Create link based on type
-    let link;
-
-    switch (linkType) {
-      case "pipe":
-        link = new joint.shapes.standard.Link({
-          source: { id: sourceId },
-          target: { id: targetId },
-          attrs: {
-            line: {
-              stroke: "#3498db",
-              strokeWidth: 5,
-              targetMarker: { type: "none" },
-            },
-          },
-          labels: [
-            {
-              position: 0.5,
-              attrs: {
-                text: { text: "Pipe" },
-              },
-            },
-          ],
-        });
-        break;
-      case "electrical":
-        link = new joint.shapes.standard.Link({
-          source: { id: sourceId },
-          target: { id: targetId },
-          attrs: {
-            line: {
-              stroke: "#e74c3c",
-              strokeWidth: 3,
-              strokeDasharray: "5 2",
-              targetMarker: { type: "circle", fill: "#e74c3c" },
-            },
-          },
-          labels: [
-            {
-              position: 0.5,
-              attrs: {
-                text: { text: "Electrical" },
-              },
-            },
-          ],
-        });
-        break;
-      case "data":
-        link = new joint.shapes.standard.Link({
-          source: { id: sourceId },
-          target: { id: targetId },
-          attrs: {
-            line: {
-              stroke: "#2ecc71",
-              strokeWidth: 2,
-              strokeDasharray: "3 3",
-              targetMarker: {
-                type: "path",
-                d: "M 10 -5 0 0 10 5 z",
-                fill: "#2ecc71",
-              },
-            },
-          },
-          labels: [
-            {
-              position: 0.5,
-              attrs: {
-                text: { text: "Data" },
-              },
-            },
-          ],
-        });
-        break;
-      case "signal":
-        link = new joint.shapes.standard.Link({
-          source: { id: sourceId },
-          target: { id: targetId },
-          attrs: {
-            line: {
-              stroke: "#9b59b6",
-              strokeWidth: 2,
-              targetMarker: {
-                type: "path",
-                d: "M 10 -5 0 0 10 5 z",
-                fill: "#9b59b6",
-              },
-            },
-          },
-          labels: [
-            {
-              position: 0.5,
-              attrs: {
-                text: { text: "Signal" },
-              },
-            },
-          ],
-        });
-        break;
-      default:
-        link = new joint.shapes.standard.Link({
-          source: { id: sourceId },
-          target: { id: targetId },
-          attrs: {
-            line: {
-              stroke: "#333333",
-              strokeWidth: 2,
-              targetMarker: { type: "path", d: "M 10 -5 0 0 10 5 z" },
-            },
-          },
-        });
-    }
-
-    // Add link to the graph
-    this.graph.addCell(link);
-
-    // Show success message
-    Swal.fire({
-      title: "Link Created",
-      text: `Link created between ${source.get("type")} and ${target.get(
-        "type"
-      )}`,
-      icon: "success",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-  }
 }
+// متد createLink را حذف می‌کنیم چون به LinkManager منتقل شده است
