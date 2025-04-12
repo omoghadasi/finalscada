@@ -76,6 +76,17 @@ export default class ContextMenuManager {
       this.contextMenu.style.display = "none";
     });
 
+    // اضافه کردن گزینه‌های مدیریت پورت
+    this.addMenuItem("Add Port", () => {
+      this.toolbarManager.portManager.setupPort(this.selectedElement);
+      this.contextMenu.style.display = "none";
+    });
+
+    this.addMenuItem("Manage Ports", () => {
+      this.toolbarManager.portManager.managePorts(this.selectedElement);
+      this.contextMenu.style.display = "none";
+    });
+
     if (this.selectedElement.getParentCell()) {
       // If the element is embedded, show the detach option
       this.addMenuItem("Detach from parent", () => {
