@@ -26,7 +26,7 @@ export default class ToolbarManager {
     // ایجاد پنل ابزار
     this.toolbarPaper = new dia.Paper({
       el: this.toolbarEl,
-      width: 180,
+      width: 200,
       height: 800,
       model: new dia.Graph(),
       interactive: false,
