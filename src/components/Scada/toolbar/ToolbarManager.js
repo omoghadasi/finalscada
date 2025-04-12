@@ -110,45 +110,305 @@ export default class ToolbarManager {
 
           contextMenu.appendChild(detachOption);
           contextMenu.style.display = "block";
-        } else {
-          // اگر المنت embed نشده باشد، گزینه‌های دیگر را نمایش می‌دهیم
-          // می‌توانید گزینه‌های دیگر را در اینجا اضافه کنید
-          const infoOption = document.createElement("div");
-          infoOption.className = "context-menu-item";
-          infoOption.textContent = "Element Info";
-          infoOption.style.padding = "8px 15px";
-          infoOption.style.cursor = "pointer";
-          infoOption.style.transition = "background-color 0.2s";
+        }
+        // اگر المنت embed نشده باشد، گزینه‌های دیگر را نمایش می‌دهیم
 
-          infoOption.addEventListener("mouseover", () => {
-            infoOption.style.backgroundColor = "#f0f0f0";
+        // اضافه کردن گزینه Watcher برای پنل‌ها
+
+        if (selectedElement.get("type") === "Panel") {
+          const watcherOption = document.createElement("div");
+          watcherOption.className = "context-menu-item";
+          watcherOption.textContent = "Set Watcher";
+          watcherOption.style.padding = "8px 15px";
+          watcherOption.style.cursor = "pointer";
+          watcherOption.style.transition = "background-color 0.2s";
+
+          watcherOption.addEventListener("mouseover", () => {
+            watcherOption.style.backgroundColor = "#f0f0f0";
           });
 
-          infoOption.addEventListener("mouseout", () => {
-            infoOption.style.backgroundColor = "transparent";
+          watcherOption.addEventListener("mouseout", () => {
+            watcherOption.style.backgroundColor = "transparent";
           });
 
-          infoOption.addEventListener("click", () => {
-            Swal.fire({
-              title: "Element Info",
-              html: `Type: ${
-                selectedElement.get("type") || selectedElement.attributes.type
-              }<br>
-                     ID: ${selectedElement.id}`,
-              icon: "info",
-            });
+          watcherOption.addEventListener("click", () => {
+            this.setupWatcher(selectedElement);
             contextMenu.style.display = "none";
           });
 
-          contextMenu.appendChild(infoOption);
-          contextMenu.style.display = "block";
+          contextMenu.appendChild(watcherOption);
         }
+
+        // گزینه اطلاعات المنت برای همه المنت‌ها
+        const infoOption = document.createElement("div");
+        infoOption.className = "context-menu-item";
+        infoOption.textContent = "Element Info";
+        infoOption.style.padding = "8px 15px";
+        infoOption.style.cursor = "pointer";
+        infoOption.style.transition = "background-color 0.2s";
+
+        infoOption.addEventListener("mouseover", () => {
+          infoOption.style.backgroundColor = "#f0f0f0";
+        });
+
+        infoOption.addEventListener("mouseout", () => {
+          infoOption.style.backgroundColor = "transparent";
+        });
+
+        infoOption.addEventListener("click", () => {
+          Swal.fire({
+            title: "Element Info",
+            html: `Type: ${
+              selectedElement.get("type") || selectedElement.attributes.type
+            }<br>
+                     ID: ${selectedElement.id}`,
+            icon: "info",
+          });
+          contextMenu.style.display = "none";
+        });
+
+        contextMenu.appendChild(infoOption);
+        contextMenu.style.display = "block";
       }
     });
 
     // پنهان کردن منو با کلیک در هر جای دیگر
     document.addEventListener("click", () => {
       contextMenu.style.display = "none";
+    });
+  }
+
+  // متد جدید برای تنظیم Watcher
+  setupWatcher(panel) {
+    // دریافت همه المنت‌های موجود در گراف به جز پنل فعلی
+    const elements = this.graph.getElements().filter(
+      (el) => el.id !== panel.id && !el.getParentCell() // فقط المنت‌های مستقل
+    );
+
+    // ساخت آرایه‌ای از گزینه‌های قابل انتخاب برای المنت‌ها
+    const elementOptions = elements.map((el) => {
+      const type = el.get("type") || el.attributes.type;
+      return {
+        id: el.id,
+        type: type,
+        label: `${type} (${el.id.substring(0, 8)})`,
+      };
+    });
+
+    // ساخت HTML برای select المنت‌ها
+    const elementSelectOptions = elementOptions
+      .map((opt) => `<option value="element:${opt.id}">${opt.label}</option>`)
+      .join("");
+
+    // ساخت HTML برای select داده‌های store
+    // فرض می‌کنیم که store دارای بخش‌های مختلفی است
+    const storeSelectOptions = `
+      <option value="store:tank1.level">Tank 1 Level</option>
+      <option value="store:tank1.temperature">Tank 1 Temperature</option>
+      <option value="store:tank2.level">Tank 2 Level</option>
+      <option value="store:pump1.power">Pump 1 Power</option>
+      <option value="store:valve1.open">Valve 1 Open State</option>
+    `;
+
+    // ترکیب گزینه‌های المنت و store
+    const allSelectOptions = `
+      <optgroup label="Elements">
+        ${elementSelectOptions}
+      </optgroup>
+      <optgroup label="Store Data">
+        ${storeSelectOptions}
+      </optgroup>
+    `;
+
+    // نمایش modal با Swal
+    Swal.fire({
+      title: "Set Panel Watcher",
+      html: `
+        <div style="text-align: left; margin-bottom: 15px;">
+          <label for="data-source-select" style="display: block; margin-bottom: 5px; font-weight: bold;">Select Data Source:</label>
+          <select id="data-source-select" class="swal2-select" style="width: 100%;">
+            ${allSelectOptions}
+          </select>
+        </div>
+        <div id="data-type-container" style="text-align: left; display: none;">
+          <label for="data-type-select" style="display: block; margin-bottom: 5px; font-weight: bold;">Select Data Type:</label>
+          <select id="data-type-select" class="swal2-select" style="width: 100%;">
+          </select>
+        </div>
+        <div style="text-align: left; margin-top: 15px;">
+          <label for="update-interval" style="display: block; margin-bottom: 5px; font-weight: bold;">Update Interval (ms):</label>
+          <input type="number" id="update-interval" class="swal2-input" value="1000" min="100" max="10000" style="width: 100%;">
+        </div>
+      `,
+      didOpen: () => {
+        // اضافه کردن رویداد برای تغییر منبع داده
+        const dataSourceSelect = document.getElementById("data-source-select");
+        const dataTypeContainer = document.getElementById(
+          "data-type-container"
+        );
+        const dataTypeSelect = document.getElementById("data-type-select");
+
+        dataSourceSelect.addEventListener("change", () => {
+          const selectedValue = dataSourceSelect.value;
+
+          // اگر یک المنت انتخاب شده باشد، نمایش گزینه‌های نوع داده
+          if (selectedValue.startsWith("element:")) {
+            const elementId = selectedValue.split(":")[1];
+            const element = this.graph.getCell(elementId);
+
+            if (element) {
+              // پاک کردن گزینه‌های قبلی
+              dataTypeSelect.innerHTML = "";
+
+              // اضافه کردن گزینه‌های جدید بر اساس نوع المنت
+              const dataTypes = this.getElementDataTypes(element);
+
+              dataTypes.forEach((type) => {
+                const option = document.createElement("option");
+                option.value = type;
+                option.textContent =
+                  type.charAt(0).toUpperCase() + type.slice(1);
+                dataTypeSelect.appendChild(option);
+              });
+
+              // نمایش بخش انتخاب نوع داده
+              dataTypeContainer.style.display = "block";
+            }
+          } else {
+            // اگر داده از store انتخاب شده باشد، نیازی به انتخاب نوع داده نیست
+            dataTypeContainer.style.display = "none";
+          }
+        });
+      },
+      showCancelButton: true,
+      confirmButtonText: "Set Watcher",
+      cancelButtonText: "Cancel",
+      preConfirm: () => {
+        const dataSourceValue =
+          document.getElementById("data-source-select").value;
+        const updateInterval = document.getElementById("update-interval").value;
+
+        let dataSource, dataId, dataType;
+
+        if (dataSourceValue.startsWith("element:")) {
+          dataSource = "element";
+          dataId = dataSourceValue.split(":")[1];
+          dataType = document.getElementById("data-type-select").value;
+        } else if (dataSourceValue.startsWith("store:")) {
+          dataSource = "store";
+          dataId = dataSourceValue.split(":")[1];
+          dataType = dataId.split(".")[1]; // مثلاً از "tank1.level" مقدار "level" را استخراج می‌کنیم
+        }
+
+        return { dataSource, dataId, dataType, updateInterval };
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const { dataSource, dataId, dataType, updateInterval } = result.value;
+
+        if (dataSource === "element") {
+          const targetElement = this.graph.getCell(dataId);
+          if (targetElement) {
+            this.connectPanelToElement(panel, targetElement, dataType);
+          }
+        } else if (dataSource === "store") {
+          this.connectPanelToStore(
+            panel,
+            dataId,
+            dataType,
+            parseInt(updateInterval)
+          );
+        }
+      }
+    });
+  }
+
+  // متد جدید برای دریافت انواع داده‌های قابل دسترس یک المنت
+  getElementDataTypes(element) {
+    const elementType = element.get("type") || element.attributes.type;
+
+    // تعریف انواع داده برای هر نوع المنت
+    const dataTypeMap = {
+      LiquidTank: ["level", "temperature", "pressure"],
+      ConicTank: ["level", "temperature", "pressure"],
+      Pump: ["power", "flow", "status"],
+      ControlValve: ["open", "flow"],
+      HandValve: ["open", "flow"],
+      Zone: ["status", "temperature", "humidity"],
+      Join: ["flow"],
+      CircleProgressBar: ["value", "percentage"],
+    };
+
+    // برگرداندن انواع داده برای المنت یا یک آرایه پیش‌فرض
+    return dataTypeMap[elementType] || ["value"];
+  }
+
+  // متد جدید برای اتصال پنل به داده‌های store
+  connectPanelToStore(panel, storeKey, dataType, updateInterval) {
+    // قطع اتصال قبلی اگر وجود داشته باشد
+    panel.stopListening();
+
+    // حذف هر interval قبلی
+    if (panel._storeWatcherInterval) {
+      clearInterval(panel._storeWatcherInterval);
+    }
+
+    // تنظیم اطلاعات اتصال در پنل
+    panel.set({
+      watchTarget: `store:${storeKey}`,
+      watchType: dataType,
+      updateInterval: updateInterval,
+    });
+
+    // ایجاد یک تابع برای دریافت داده از store
+    const updateFromStore = () => {
+      // در اینجا باید به store واقعی متصل شوید
+      // این یک مثال ساده است که مقادیر تصادفی تولید می‌کند
+
+      // در یک برنامه واقعی، اینجا باید از store واقعی مقدار را دریافت کنید
+      // مثلاً: const value = this.store.getState()[storeKey.split('.')[0]][storeKey.split('.')[1]];
+
+      // برای مثال، مقدار تصادفی تولید می‌کنیم
+      const value = Math.random() * 100;
+
+      // تنظیم مقدار و رنگ مناسب بر اساس نوع داده
+      let color = "#0EAD69"; // رنگ پیش‌فرض
+
+      if (dataType === "level") {
+        color = value > 80 ? "#ED2637" : value < 20 ? "#FFD23F" : "#0EAD69";
+      } else if (dataType === "temperature") {
+        color = value > 70 ? "#ED2637" : value < 30 ? "#1446A0" : "#FFD23F";
+      } else if (dataType === "pressure") {
+        color = value > 80 ? "#ED2637" : "#1446A0";
+      } else if (
+        dataType === "flow" ||
+        dataType === "power" ||
+        dataType === "open"
+      ) {
+        color = value > 0 ? "#0EAD69" : "#ED2637";
+      }
+
+      // تنظیم مقدار و رنگ در پنل
+      panel.set({
+        level: value, // استفاده از level برای نمایش همه مقادیر
+        color: color,
+        label: `${storeKey}: ${value.toFixed(2)}`,
+      });
+    };
+
+    // اجرای اولیه
+    updateFromStore();
+
+    // تنظیم interval برای به‌روزرسانی مداوم
+    panel._storeWatcherInterval = setInterval(updateFromStore, updateInterval);
+
+    // نمایش پیام موفقیت
+    Swal.fire({
+      title: "Store Watcher Set",
+      text: `Panel is now watching ${storeKey} from store`,
+      icon: "success",
+      timer: 2000,
+      showConfirmButton: false,
     });
   }
 
@@ -167,9 +427,18 @@ export default class ToolbarManager {
       // جدا کردن المنت از والد
       parent.unembed(element);
 
+      // تنظیم موقعیت مطلق
+      element.position(absoluteX, absoluteY);
+
       // حذف رویدادهای مربوط به والد
       if (element.get("type") === "Panel") {
         element.stopListening(parent);
+
+        // حذف interval مربوط به store اگر وجود داشته باشد
+        if (element._storeWatcherInterval) {
+          clearInterval(element._storeWatcherInterval);
+          delete element._storeWatcherInterval;
+        }
       }
 
       // نمایش پیام موفقیت
@@ -470,5 +739,69 @@ export default class ToolbarManager {
         });
       }
     }
+  }
+
+  // متد برای اتصال پنل به المنت
+  connectPanelToElement(panel, targetElement, dataType) {
+    // قطع اتصال قبلی اگر وجود داشته باشد
+    panel.stopListening();
+
+    // حذف هر interval قبلی
+    if (panel._storeWatcherInterval) {
+      clearInterval(panel._storeWatcherInterval);
+      delete panel._storeWatcherInterval;
+    }
+
+    // تنظیم اطلاعات اتصال در پنل
+    panel.set({
+      watchTarget: targetElement.id,
+      watchType: dataType,
+    });
+
+    // تنظیم رویداد مناسب بر اساس نوع داده
+    const eventName = `change:${dataType}`;
+
+    // اتصال رویداد
+    panel.listenTo(targetElement, eventName, (_, value) => {
+      // تنظیم مقدار و رنگ مناسب بر اساس نوع داده
+      let color = "#0EAD69"; // رنگ پیش‌فرض
+
+      if (dataType === "level") {
+        color = value > 80 ? "#ED2637" : value < 20 ? "#FFD23F" : "#0EAD69";
+      } else if (dataType === "pressure") {
+        color = value > 80 ? "#ED2637" : "#1446A0";
+      } else if (dataType === "temperature") {
+        color = value > 70 ? "#ED2637" : value < 30 ? "#1446A0" : "#FFD23F";
+      } else if (dataType === "flow") {
+        color = value > 0 ? "#0EAD69" : "#ED2637";
+      } else if (dataType === "power") {
+        color = value > 0 ? "#0EAD69" : "#ED2637";
+      } else if (dataType === "open") {
+        color = value > 0 ? "#0EAD69" : "#ED2637";
+      }
+
+      // تنظیم مقدار و رنگ در پنل
+      panel.set({
+        level: value, // استفاده از level برای نمایش همه مقادیر
+        color: color,
+        label: `${dataType}: ${value.toFixed(2)}`,
+      });
+    });
+
+    // دریافت مقدار فعلی و اعمال آن
+    const currentValue = targetElement.get(dataType);
+    if (currentValue !== undefined) {
+      // شبیه‌سازی تغییر برای اعمال مقدار اولیه
+      targetElement.trigger(eventName, targetElement, currentValue);
+    }
+
+    // نمایش پیام موفقیت
+    Swal.fire({
+      title: "Watcher Set",
+      text: `Panel is now watching ${dataType} of ${targetElement.get("type")}`,
+      icon: "success",
+      timer: 2000,
+      showConfirmButton: false,
+    });
   }
 }
