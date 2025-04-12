@@ -1,4 +1,5 @@
 import Swal from "sweetalert2";
+import * as joint from "@joint/core";
 
 export default class WatcherManager {
   constructor(graph, storeManager) {
@@ -281,6 +282,247 @@ export default class WatcherManager {
     Swal.fire({
       title: "Store Watcher Set",
       text: `Panel is now watching ${storeKey} from store`,
+      icon: "success",
+      timer: 2000,
+      showConfirmButton: false,
+    });
+  }
+
+  // Add this method to the WatcherManager class
+  // تغییر متد setupLink برای پذیرفتن المنت منبع
+  setupLink(sourceElement) {
+    // دریافت شناسه المنت منبع
+    const sourceId = sourceElement ? sourceElement.id : null;
+
+    // دریافت همه المنت‌های موجود در گراف
+    const elements = this.graph.getElements().filter(
+      (el) => !el.getParentCell() && (!sourceId || el.id !== sourceId) // فقط المنت‌های مستقل و غیر از منبع
+    );
+
+    // ایجاد آرایه‌ای از گزینه‌های قابل انتخاب برای المنت‌ها
+    const elementOptions = elements.map((el) => {
+      const type = el.get("type") || el.attributes.type;
+      return {
+        id: el.id,
+        type: type,
+        label: `${type} (${el.id.substring(0, 8)})`,
+      };
+    });
+
+    // ایجاد HTML برای گزینه‌های انتخاب المنت
+    const elementSelectOptions = elementOptions
+      .map((opt) => `<option value="${opt.id}">${opt.label}</option>`)
+      .join("");
+
+    // تعریف انواع لینک
+    const linkTypes = [
+      { value: "default", label: "Default" },
+      { value: "pipe", label: "Pipe" },
+      { value: "electrical", label: "Electrical" },
+      { value: "data", label: "Data" },
+      { value: "signal", label: "Signal" },
+    ];
+
+    // ایجاد HTML برای گزینه‌های نوع لینک
+    const linkTypeOptions = linkTypes
+      .map((opt) => `<option value="${opt.value}">${opt.label}</option>`)
+      .join("");
+
+    // نمایش اطلاعات المنت منبع
+    const sourceInfo = sourceElement
+      ? `<div style="text-align: left; margin-bottom: 15px; padding: 10px; background-color: #f0f0f0; border-radius: 5px;">
+  <strong>Source Element:</strong> ${sourceElement.get(
+    "type"
+  )} (${sourceElement.id.substring(0, 8)})
+  </div>`
+      : `<div style="text-align: left; margin-bottom: 15px;">
+  <label for="source-element" style="display: block; margin-bottom: 5px; font-weight: bold;">Source Element:</label>
+  <select id="source-element" class="swal2-select" style="width: 100%;">
+  ${elementSelectOptions}
+  </select>
+  </div>`;
+
+    // نمایش modal با Swal
+    Swal.fire({
+      title: "Create Link Between Elements",
+      html: `
+  ${sourceInfo}
+  <div style="text-align: left; margin-bottom: 15px;">
+  <label for="target-element" style="display: block; margin-bottom: 5px; font-weight: bold;">Target Element:</label>
+  <select id="target-element" class="swal2-select" style="width: 100%;">
+  ${elementSelectOptions}
+  </select>
+  </div>
+  <div style="text-align: left; margin-bottom: 15px;">
+  <label for="link-type" style="display: block; margin-bottom: 5px; font-weight: bold;">Link Type:</label>
+  <select id="link-type" class="swal2-select" style="width: 100%;">
+  ${linkTypeOptions}
+  </select>
+  </div>
+  `,
+      showCancelButton: true,
+      confirmButtonText: "Create Link",
+      cancelButtonText: "Cancel",
+      preConfirm: () => {
+        // اگر المنت منبع از قبل تعیین شده باشد، از آن استفاده می‌کنیم
+        // در غیر این صورت، از مقدار انتخاب شده در فرم استفاده می‌کنیم
+        const finalSourceId =
+          sourceId || document.getElementById("source-element").value;
+        const targetId = document.getElementById("target-element").value;
+        const linkType = document.getElementById("link-type").value;
+
+        // اعتبارسنجی که منبع و مقصد متفاوت باشند
+        if (finalSourceId === targetId) {
+          Swal.showValidationMessage(
+            "Source and target must be different elements"
+          );
+          return false;
+        }
+
+        return { sourceId: finalSourceId, targetId, linkType };
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const { sourceId, targetId, linkType } = result.value;
+        this.createLink(sourceId, targetId, linkType);
+      }
+    });
+  }
+
+  createLink(sourceId, targetId, linkType) {
+    const source = this.graph.getCell(sourceId);
+    const target = this.graph.getCell(targetId);
+
+    if (!source || !target) {
+      Swal.fire({
+        title: "Error",
+        text: "Source or target element not found",
+        icon: "error",
+      });
+      return;
+    }
+
+    // Create link based on type
+    let link;
+
+    switch (linkType) {
+      case "pipe":
+        link = new joint.shapes.standard.Link({
+          source: { id: sourceId },
+          target: { id: targetId },
+          attrs: {
+            line: {
+              stroke: "#3498db",
+              strokeWidth: 5,
+              targetMarker: { type: "none" },
+            },
+          },
+          labels: [
+            {
+              position: 0.5,
+              attrs: {
+                text: { text: "Pipe" },
+              },
+            },
+          ],
+        });
+        break;
+      case "electrical":
+        link = new joint.shapes.standard.Link({
+          source: { id: sourceId },
+          target: { id: targetId },
+          attrs: {
+            line: {
+              stroke: "#e74c3c",
+              strokeWidth: 3,
+              strokeDasharray: "5 2",
+              targetMarker: { type: "circle", fill: "#e74c3c" },
+            },
+          },
+          labels: [
+            {
+              position: 0.5,
+              attrs: {
+                text: { text: "Electrical" },
+              },
+            },
+          ],
+        });
+        break;
+      case "data":
+        link = new joint.shapes.standard.Link({
+          source: { id: sourceId },
+          target: { id: targetId },
+          attrs: {
+            line: {
+              stroke: "#2ecc71",
+              strokeWidth: 2,
+              strokeDasharray: "3 3",
+              targetMarker: {
+                type: "path",
+                d: "M 10 -5 0 0 10 5 z",
+                fill: "#2ecc71",
+              },
+            },
+          },
+          labels: [
+            {
+              position: 0.5,
+              attrs: {
+                text: { text: "Data" },
+              },
+            },
+          ],
+        });
+        break;
+      case "signal":
+        link = new joint.shapes.standard.Link({
+          source: { id: sourceId },
+          target: { id: targetId },
+          attrs: {
+            line: {
+              stroke: "#9b59b6",
+              strokeWidth: 2,
+              targetMarker: {
+                type: "path",
+                d: "M 10 -5 0 0 10 5 z",
+                fill: "#9b59b6",
+              },
+            },
+          },
+          labels: [
+            {
+              position: 0.5,
+              attrs: {
+                text: { text: "Signal" },
+              },
+            },
+          ],
+        });
+        break;
+      default:
+        link = new joint.shapes.standard.Link({
+          source: { id: sourceId },
+          target: { id: targetId },
+          attrs: {
+            line: {
+              stroke: "#333333",
+              strokeWidth: 2,
+              targetMarker: { type: "path", d: "M 10 -5 0 0 10 5 z" },
+            },
+          },
+        });
+    }
+
+    // Add link to the graph
+    this.graph.addCell(link);
+
+    // Show success message
+    Swal.fire({
+      title: "Link Created",
+      text: `Link created between ${source.get("type")} and ${target.get(
+        "type"
+      )}`,
       icon: "success",
       timer: 2000,
       showConfirmButton: false,

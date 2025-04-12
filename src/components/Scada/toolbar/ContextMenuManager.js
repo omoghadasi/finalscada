@@ -69,15 +69,22 @@ export default class ContextMenuManager {
   }
 
   buildMenuItems() {
+    // اضافه کردن گزینه "Create Link" به منوی راست کلیک
+    this.addMenuItem("Create Link", () => {
+      // ارسال المنت انتخاب شده به عنوان منبع
+      this.toolbarManager.watcherManager.setupLink(this.selectedElement);
+      this.contextMenu.style.display = "none";
+    });
+
     if (this.selectedElement.getParentCell()) {
-      // اگر المنت embed شده باشد، گزینه حذف embed را نمایش می‌دهیم
+      // If the element is embedded, show the detach option
       this.addMenuItem("Detach from parent", () => {
-        this.toolbarManager.detachElement(this.selectedElement);
+        this.toolbarManager.elementUtils.detachElement(this.selectedElement);
         this.contextMenu.style.display = "none";
       });
     }
 
-    // اضافه کردن گزینه Watcher برای پنل‌ها
+    // Add Watcher option for panels
     if (this.selectedElement.get("type") === "Panel") {
       this.addMenuItem("Set Watcher", () => {
         this.toolbarManager.watcherManager.setupWatcher(this.selectedElement);
@@ -85,7 +92,7 @@ export default class ContextMenuManager {
       });
     }
 
-    // گزینه اطلاعات المنت برای همه المنت‌ها
+    // Element info option for all elements
     this.addMenuItem("Element Info", () => {
       Swal.fire({
         title: "Element Info",
