@@ -1,12 +1,10 @@
 import Swal from "sweetalert2";
-import * as joint from "@joint/core";
 import LinkManager from "./LinkManager";
 
 export default class WatcherManager {
   constructor(graph, storeManager) {
     this.graph = graph;
     this.storeManager = storeManager;
-    this.linkManager = new LinkManager(graph);
   }
 
   setupWatcher(panel) {

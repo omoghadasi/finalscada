@@ -1,5 +1,4 @@
 import Swal from "sweetalert2";
-import * as joint from "@joint/core";
 
 export default class PortManager {
   constructor(graph) {

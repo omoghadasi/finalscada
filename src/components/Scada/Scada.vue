@@ -3,13 +3,13 @@ import { ref, onMounted, reactive, toRaw } from "vue";
 import { dia, shapes, util } from "@joint/core";
 import CustomShapes from "./shapes";
 import Controllers from "./controller";
-import ToolbarManager from "./toolbar/ToolbarManager";
-import StoreManager from "./toolbar/StoreManager";
-import LinkManager from "./toolbar/LinkManager";
-import WatcherManager from "./toolbar/WatcherManager";
-import PortManager from "./toolbar/PortManager";
-import ContextMenuManager from "./toolbar/ContextMenuManager";
-import ElementUtils from "./toolbar/ElementUtils";
+import ToolbarManager from "./utils/ToolbarManager";
+import StoreManager from "./utils/StoreManager";
+import LinkManager from "./utils/LinkManager";
+import WatcherManager from "./utils/WatcherManager";
+import PortManager from "./utils/PortManager";
+import ContextMenuManager from "./utils/ContextMenuManager";
+import ElementUtils from "./utils/ElementUtils";
 
 const jointEl = ref(null);
 const toolbarEl = ref(null);
@@ -40,7 +40,7 @@ const graph = new dia.Graph(
 );
 const storeManager = new StoreManager(null);
 const linkManager = new LinkManager(graph, this);
-const watcherManager = new WatcherManager(graph, storeManager, linkManager);
+const watcherManager = new WatcherManager(graph, storeManager);
 const portManager = new PortManager(graph);
 const elementUtils = new ElementUtils(graph);
 
