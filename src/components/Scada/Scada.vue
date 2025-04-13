@@ -4,6 +4,12 @@ import { dia, shapes, util } from "@joint/core";
 import CustomShapes from "./shapes";
 import Controllers from "./controller";
 import ToolbarManager from "./toolbar/ToolbarManager";
+import StoreManager from "./toolbar/StoreManager";
+import LinkManager from "./toolbar/LinkManager";
+import WatcherManager from "./toolbar/WatcherManager";
+import PortManager from "./toolbar/PortManager";
+import ContextMenuManager from "./toolbar/ContextMenuManager";
+import ElementUtils from "./toolbar/ElementUtils";
 
 const jointEl = ref(null);
 const toolbarEl = ref(null);
@@ -32,6 +38,11 @@ const graph = new dia.Graph(
     cellNamespace: namespace,
   }
 );
+const storeManager = new StoreManager(null);
+const linkManager = new LinkManager(graph, this);
+const watcherManager = new WatcherManager(graph, storeManager, linkManager);
+const portManager = new PortManager(graph);
+const elementUtils = new ElementUtils(graph);
 
 onMounted(() => {
   const paper = new dia.Paper({
@@ -54,12 +65,23 @@ onMounted(() => {
     },
   });
 
+  const contextMenuManager = new ContextMenuManager(
+    jointEl.value,
+    graph,
+    linkManager,
+    portManager,
+    elementUtils,
+    watcherManager
+  );
+  contextMenuManager.init();
+
   // ایجاد و راه‌اندازی پنل ابزار
   const toolbarManager = new ToolbarManager(
     toolbarEl.value,
     jointEl.value,
     graph,
-    namespace
+    namespace,
+    elementUtils
   );
   toolbarManager.init();
 

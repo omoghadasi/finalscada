@@ -1,14 +1,7 @@
 import { dia } from "@joint/core";
-import Swal from "sweetalert2";
-import ContextMenuManager from "./ContextMenuManager";
-import WatcherManager from "./WatcherManager";
-import ElementUtils from "./ElementUtils";
-import StoreManager from "./StoreManager";
-import LinkManager from "./LinkManager";
-import PortManager from "./PortManager"; // اضافه کردن import
 
 export default class ToolbarManager {
-  constructor(toolbarEl, jointEl, graph, namespace, store = null) {
+  constructor(toolbarEl, jointEl, graph, namespace, elementUtils) {
     this.toolbarEl = toolbarEl;
     this.jointEl = jointEl;
     this.graph = graph;
@@ -27,18 +20,7 @@ export default class ToolbarManager {
       { type: "CircleProgressBar", label: "Progress Bar", icon: "⭕" },
       { type: "Panel", label: "Panel", icon: "📊" },
     ];
-
-    // Initialize managers
-    this.storeManager = new StoreManager(store);
-    this.elementUtils = new ElementUtils(graph);
-    this.portManager = new PortManager(graph);
-    this.linkManager = new LinkManager(graph, this); // ارسال this به LinkManager
-    this.watcherManager = new WatcherManager(
-      graph,
-      this.storeManager,
-      this.linkManager
-    );
-    this.contextMenuManager = new ContextMenuManager(jointEl, graph, this);
+    this.elementUtils = elementUtils;
   }
 
   init() {
@@ -56,9 +38,6 @@ export default class ToolbarManager {
 
     // Setup element move listener
     this.setupElementMoveListener();
-
-    // Initialize context menu
-    this.contextMenuManager.init();
   }
 
   // Set up element move listener
@@ -242,10 +221,5 @@ export default class ToolbarManager {
       // Check proximity to other elements
       this.elementUtils.checkForNearbyElements(newElement);
     }
-  }
-
-  // Method to set the store
-  setStore(store) {
-    this.storeManager.setStore(store);
   }
 }

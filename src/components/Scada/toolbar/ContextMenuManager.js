@@ -1,10 +1,20 @@
 import Swal from "sweetalert2";
 
 export default class ContextMenuManager {
-  constructor(jointEl, graph, toolbarManager) {
+  constructor(
+    jointEl,
+    graph,
+    linkManager,
+    portManager,
+    elementUtils,
+    watcherManager
+  ) {
     this.jointEl = jointEl;
     this.graph = graph;
-    this.toolbarManager = toolbarManager;
+    this.linkManager = linkManager;
+    this.portManager = portManager;
+    this.elementUtils = elementUtils;
+    this.watcherManager = watcherManager;
     this.contextMenu = null;
     this.selectedElement = null;
   }
@@ -72,25 +82,25 @@ export default class ContextMenuManager {
     // اضافه کردن گزینه "Connect Ports" به منوی راست کلیک
     this.addMenuItem("Connect Ports", () => {
       // ارسال المنت انتخاب شده به عنوان منبع
-      this.toolbarManager.linkManager.setupPortLink(this.selectedElement);
+      this.linkManager.setupPortLink(this.selectedElement);
       this.contextMenu.style.display = "none";
     });
 
     // اضافه کردن گزینه‌های مدیریت پورت
     this.addMenuItem("Add Port", () => {
-      this.toolbarManager.portManager.setupPort(this.selectedElement);
+      this.portManager.setupPort(this.selectedElement);
       this.contextMenu.style.display = "none";
     });
 
     this.addMenuItem("Manage Ports", () => {
-      this.toolbarManager.portManager.managePorts(this.selectedElement);
+      this.portManager.managePorts(this.selectedElement);
       this.contextMenu.style.display = "none";
     });
 
     if (this.selectedElement.getParentCell()) {
       // If the element is embedded, show the detach option
       this.addMenuItem("Detach from parent", () => {
-        this.toolbarManager.elementUtils.detachElement(this.selectedElement);
+        this.elementUtils.detachElement(this.selectedElement);
         this.contextMenu.style.display = "none";
       });
     }
@@ -98,7 +108,7 @@ export default class ContextMenuManager {
     // Add Watcher option for panels
     if (this.selectedElement.get("type") === "Panel") {
       this.addMenuItem("Set Watcher", () => {
-        this.toolbarManager.watcherManager.setupWatcher(this.selectedElement);
+        this.watcherManager.setupWatcher(this.selectedElement);
         this.contextMenu.style.display = "none";
       });
     }
