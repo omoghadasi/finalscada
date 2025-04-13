@@ -35,6 +35,14 @@ export default class PortManager {
       { value: "signal", label: "Signal" },
     ];
 
+    // تعریف موقعیت‌های پورت
+    const portPositions = [
+      { value: "left", label: "Left" },
+      { value: "right", label: "Right" },
+      { value: "top", label: "Top" },
+      { value: "bottom", label: "Bottom" },
+    ];
+
     // ایجاد HTML برای گزینه‌های نوع پورت
     const portTypeOptions = portTypes
       .map((opt) => `<option value="${opt.value}">${opt.label}</option>`)
@@ -42,6 +50,11 @@ export default class PortManager {
 
     // ایجاد HTML برای گزینه‌های نوع لینک
     const linkTypeOptions = linkTypes
+      .map((opt) => `<option value="${opt.value}">${opt.label}</option>`)
+      .join("");
+
+    // ایجاد HTML برای گزینه‌های موقعیت پورت
+    const portPositionOptions = portPositions
       .map((opt) => `<option value="${opt.value}">${opt.label}</option>`)
       .join("");
 
@@ -92,20 +105,87 @@ export default class PortManager {
         <div style="text-align: left; margin-bottom: 15px;">
           <label for="port-position" style="display: block; margin-bottom: 5px; font-weight: bold;">Port Position:</label>
           <select id="port-position" class="swal2-select" style="width: 100%;">
-            <option value="left">Left</option>
-            <option value="right">Right</option>
-            <option value="top">Top</option>
-            <option value="bottom">Bottom</option>
+            ${portPositionOptions}
           </select>
         </div>
         <div style="text-align: left; margin-bottom: 15px;">
           <label for="port-label" style="display: block; margin-bottom: 5px; font-weight: bold;">Port Label (optional):</label>
           <input id="port-label" class="swal2-input" placeholder="Enter port label" style="width: 100%;">
         </div>
+        <div id="position-preview" style="text-align: center; margin-bottom: 15px; border: 1px solid #ddd; padding: 10px; border-radius: 4px;">
+          <div style="width: 100px; height: 100px; background-color: #eee; position: relative; margin: 0 auto; border-radius: 4px;">
+            <div id="port-preview" style="width: 12px; height: 12px; background-color: #3498db; border-radius: 50%; position: absolute; left: 0; top: 50%; transform: translate(-50%, -50%);"></div>
+          </div>
+        </div>
       `,
       showCancelButton: true,
       confirmButtonText: "Add Port",
       cancelButtonText: "Cancel",
+      didOpen: () => {
+        // پیش‌نمایش موقعیت پورت
+        const portPositionSelect = document.getElementById("port-position");
+        const portPreview = document.getElementById("port-preview");
+
+        // تابع به‌روزرسانی پیش‌نمایش
+        const updatePreview = () => {
+          const position = portPositionSelect.value;
+
+          switch (position) {
+            case "left":
+              portPreview.style.left = "0";
+              portPreview.style.top = "50%";
+              portPreview.style.transform = "translate(-50%, -50%)";
+              break;
+            case "right":
+              portPreview.style.left = "100%";
+              portPreview.style.top = "50%";
+              portPreview.style.transform = "translate(-50%, -50%)";
+              break;
+            case "top":
+              portPreview.style.left = "50%";
+              portPreview.style.top = "0";
+              portPreview.style.transform = "translate(-50%, -50%)";
+              break;
+            case "bottom":
+              portPreview.style.left = "50%";
+              portPreview.style.top = "100%";
+              portPreview.style.transform = "translate(-50%, -50%)";
+              break;
+          }
+        };
+
+        // به‌روزرسانی اولیه پیش‌نمایش
+        updatePreview();
+
+        // اضافه کردن رویداد تغییر برای به‌روزرسانی پیش‌نمایش
+        portPositionSelect.addEventListener("change", updatePreview);
+
+        // به‌روزرسانی رنگ پیش‌نمایش بر اساس نوع لینک
+        const linkTypeSelect = document.getElementById("link-type");
+        linkTypeSelect.addEventListener("change", () => {
+          const linkType = linkTypeSelect.value;
+          let color;
+
+          switch (linkType) {
+            case "pipe":
+              color = "#3498db"; // آبی
+              break;
+            case "electrical":
+              color = "#e74c3c"; // قرمز
+              break;
+            case "data":
+              color = "#2ecc71"; // سبز
+              break;
+            case "signal":
+              color = "#9b59b6"; // بنفش
+              break;
+            default:
+              color = "#7f8c8d"; // خاکستری
+          }
+
+          portPreview.style.backgroundColor = color;
+        });
+      },
       preConfirm: () => {
         const portId = document.getElementById("port-id").value;
         const portType = document.getElementById("port-type").value;
@@ -144,79 +224,71 @@ export default class PortManager {
   }
 
   /**
-   * افزودن پورت جدید به المنت
+   * افزودن پورت به المنت
    * @param {Object} element - المنت مورد نظر
-   * @param {string} portId - شناسه پورت
-   * @param {string} portType - نوع پورت (input, output, inout)
-   * @param {string} linkType - نوع لینک (default, pipe, electrical, data, signal)
-   * @param {string} position - موقعیت پورت (left, right, top, bottom)
-   * @param {string} label - برچسب پورت (اختیاری)
+   * @param {String} portId - شناسه پورت
+   * @param {String} portType - نوع پورت (input, output, inout)
+   * @param {String} linkType - نوع لینک
+   * @param {String} position - موقعیت پورت (left, right, top, bottom, leftTop, ...)
+   * @param {String} label - برچسب پورت
    */
   addPortToElement(element, portId, portType, linkType, position, label) {
-    // تنظیم رنگ پورت بر اساس نوع لینک
-    let portColor;
-    switch (linkType) {
-      case "pipe":
-        portColor = "#3498db"; // آبی
-        break;
-      case "electrical":
-        portColor = "#e74c3c"; // قرمز
-        break;
-      case "data":
-        portColor = "#2ecc71"; // سبز
-        break;
-      case "signal":
-        portColor = "#9b59b6"; // بنفش
-        break;
-      default:
-        portColor = "#7f8c8d"; // خاکستری
-    }
+    if (!element) return;
 
-    // تنظیمات پورت
+    // Get color based on link type
+    const color = this.getLinkTypeColor(linkType);
+
+    // Base port configuration
     const portConfig = {
       id: portId,
-      group: portType,
-      linkType: linkType, // ذخیره نوع لینک در پورت
       attrs: {
-        circle: {
+        portBody: {
+          fill: "#fff",
+          stroke: color,
+          strokeWidth: 2,
           r: 6,
           magnet: true,
-          stroke: portColor,
-          strokeWidth: 2,
-          fill: "#fff",
         },
-        text: {
+        portLabel: {
           text: label || portId,
           fill: "#333",
           fontSize: 10,
-          textAnchor: "middle",
-          yAlignment: "middle",
-          pointerEvents: "none",
-        },
-      },
-      position: {
-        name: position,
-        args: { dx: 0, dy: 0 },
-      },
-      label: {
-        position: {
-          name: position,
-          args: { offset: 15 },
         },
       },
     };
 
-    // افزودن پورت به المنت
-    element.addPort(portConfig);
-
-    // نمایش پیام موفقیت
-    Swal.fire({
-      title: "Port Added",
-      text: `Port "${portId}" (${linkType}) added to element`,
-      icon: "success",
-      timer: 2000,
-      showConfirmButton: false,
-    });
+    // Handle different positions
+    switch (position) {
+      case "left":
+        element.addPort({
+          ...portConfig,
+          group: "input",
+        });
+        break;
+      case "right":
+        element.addPort({
+          ...portConfig,
+          group: "output",
+        });
+        break;
+      case "top":
+        element.addPort({
+          ...portConfig,
+          group: "top",
+        });
+        break;
+      case "bottom":
+        element.addPort({
+          ...portConfig,
+          group: "bottom",
+        });
+        break;
+      default:
+        element.addPort({
+          ...portConfig,
+          group: portType,
+        });
+    }
   }
 
   /**

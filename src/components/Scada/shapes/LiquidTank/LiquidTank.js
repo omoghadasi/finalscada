@@ -58,6 +58,140 @@ export default class LiquidTank extends dia.Element {
           fill: "#350100",
         },
       },
+      // تعریف گروه‌های پورت
+      ports: {
+        groups: {
+          input: {
+            position: {
+              name: "left",
+              args: { dx: 0 }, // امکان تنظیم فاصله افقی
+            },
+            attrs: {
+              portBody: {
+                r: 6,
+                magnet: true,
+                stroke: "#3498db",
+                strokeWidth: 2,
+                fill: "#fff",
+              },
+              portLabel: {
+                fontSize: 10,
+                fill: "#333",
+                textAnchor: "middle",
+                textVerticalAnchor: "middle",
+                refX: 12, // فاصله متن از دایره
+              },
+            },
+            markup: [
+              {
+                tagName: "circle",
+                selector: "portBody",
+              },
+              {
+                tagName: "text",
+                selector: "portLabel",
+              },
+            ],
+          },
+          output: {
+            position: {
+              name: "right",
+              args: { dx: 0 }, // امکان تنظیم فاصله افقی
+            },
+            attrs: {
+              portBody: {
+                r: 6,
+                magnet: true,
+                stroke: "#e74c3c",
+                strokeWidth: 2,
+                fill: "#fff",
+              },
+              portLabel: {
+                fontSize: 10,
+                fill: "#333",
+                textAnchor: "middle",
+                textVerticalAnchor: "middle",
+                refX: -12, // فاصله متن از دایره (منفی برای سمت چپ)
+              },
+            },
+            markup: [
+              {
+                tagName: "circle",
+                selector: "portBody",
+              },
+              {
+                tagName: "text",
+                selector: "portLabel",
+              },
+            ],
+          },
+          // اضافه کردن گروه‌های جدید برای موقعیت‌های مختلف
+          top: {
+            position: {
+              name: "top",
+              args: { dy: 0 }, // امکان تنظیم فاصله عمودی
+            },
+            attrs: {
+              portBody: {
+                r: 6,
+                magnet: true,
+                stroke: "#9b59b6",
+                strokeWidth: 2,
+                fill: "#fff",
+              },
+              portLabel: {
+                fontSize: 10,
+                fill: "#333",
+                textAnchor: "middle",
+                textVerticalAnchor: "middle",
+                refY: 12, // فاصله متن از دایره
+              },
+            },
+            markup: [
+              {
+                tagName: "circle",
+                selector: "portBody",
+              },
+              {
+                tagName: "text",
+                selector: "portLabel",
+              },
+            ],
+          },
+          bottom: {
+            position: {
+              name: "bottom",
+              args: { dy: 0 }, // امکان تنظیم فاصله عمودی
+            },
+            attrs: {
+              portBody: {
+                r: 6,
+                magnet: true,
+                stroke: "#2ecc71",
+                strokeWidth: 2,
+                fill: "#fff",
+              },
+              portLabel: {
+                fontSize: 10,
+                fill: "#333",
+                textAnchor: "middle",
+                textVerticalAnchor: "middle",
+                refY: -12, // فاصله متن از دایره (منفی برای بالا)
+              },
+            },
+            markup: [
+              {
+                tagName: "circle",
+                selector: "portBody",
+              },
+              {
+                tagName: "text",
+                selector: "portLabel",
+              },
+            ],
+          },
+        },
+      },
     };
   }
 
@@ -68,6 +202,18 @@ export default class LiquidTank extends dia.Element {
                <rect @selector="top"/>
                <text @selector="label" />
            `;
+
+    // تعریف markup برای پورت‌ها
+    this.portMarkup = [
+      {
+        tagName: "circle",
+        selector: "portBody", // Changed from 'circle' to 'portBody'
+      },
+      {
+        tagName: "text",
+        selector: "portLabel", // Changed from 'text' to 'portLabel'
+      },
+    ];
   }
 
   get level() {
