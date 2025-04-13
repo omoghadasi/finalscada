@@ -4,6 +4,7 @@ import ContextMenuManager from "./ContextMenuManager";
 import WatcherManager from "./WatcherManager";
 import ElementUtils from "./ElementUtils";
 import StoreManager from "./StoreManager";
+import LinkManager from "./LinkManager";
 import PortManager from "./PortManager"; // اضافه کردن import
 
 export default class ToolbarManager {
@@ -30,8 +31,13 @@ export default class ToolbarManager {
     // Initialize managers
     this.storeManager = new StoreManager(store);
     this.elementUtils = new ElementUtils(graph);
-    this.watcherManager = new WatcherManager(graph, this.storeManager);
-    this.portManager = new PortManager(graph); // ایجاد نمونه از PortManager
+    this.portManager = new PortManager(graph);
+    this.linkManager = new LinkManager(graph, this); // ارسال this به LinkManager
+    this.watcherManager = new WatcherManager(
+      graph,
+      this.storeManager,
+      this.linkManager
+    );
     this.contextMenuManager = new ContextMenuManager(jointEl, graph, this);
   }
 

@@ -69,10 +69,10 @@ export default class ContextMenuManager {
   }
 
   buildMenuItems() {
-    // اضافه کردن گزینه "Create Link" به منوی راست کلیک
-    this.addMenuItem("Create Link", () => {
+    // اضافه کردن گزینه "Connect Ports" به منوی راست کلیک
+    this.addMenuItem("Connect Ports", () => {
       // ارسال المنت انتخاب شده به عنوان منبع
-      this.toolbarManager.watcherManager.setupLink(this.selectedElement);
+      this.toolbarManager.linkManager.setupPortLink(this.selectedElement);
       this.contextMenu.style.display = "none";
     });
 
