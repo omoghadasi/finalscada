@@ -83,8 +83,6 @@ onMounted(() => {
 
     // نمایش دستگیره‌های تغییر اندازه اگر المنت قابلیت تغییر اندازه دارد
     if (element.get("resizable") !== false) {
-      console.log("yes");
-
       elementView.showResizeHandles();
     }
   });
