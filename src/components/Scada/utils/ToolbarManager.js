@@ -9,6 +9,7 @@ export default class ToolbarManager {
     this.toolbarItems = [
       { type: "ButtonElement", label: "Button", icon: "🔘" },
       { type: "FormElement", label: "Form", icon: "📝" },
+      { type: "ImageElement", label: "Image", icon: "🖼️" },
       { type: "LiquidTank", label: "Liquid Tank", icon: "🛢️" },
       { type: "ConicTank", label: "Conic Tank", icon: "⏺️" },
       { type: "Pump", label: "Pump", icon: "⚙️" },
@@ -203,6 +204,10 @@ export default class ToolbarManager {
         break;
       case "Panel":
         newElement = new this.namespace.Panel({ position: { x, y } });
+        break;
+      case "ImageElement":
+        newElement = new this.namespace.ImageElement({ position: { x, y } });
+        // رویداد دابل کلیک برای ویرایش تصویر در ImageView.js مدیریت می‌شود
         break;
       case "Pipe":
         // For pipes we need source and target, so we don't add anything yet

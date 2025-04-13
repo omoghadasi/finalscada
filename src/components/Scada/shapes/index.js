@@ -18,6 +18,8 @@ import ButtonElement from "./Button/Button";
 import ButtonElementView from "./Button/ButtonView";
 import FormElement from "./Form/Form";
 import FormElementView from "./Form/FormView";
+import ImageElement from "./Image/Image";
+import ImageElementView from "./Image/ImageView";
 
 export default {
   ConicTank,
@@ -39,4 +41,6 @@ export default {
   ButtonElementView,
   FormElement,
   FormElementView,
+  ImageElement,
+  ImageElementView,
 };
