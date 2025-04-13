@@ -191,6 +191,27 @@ export default class ElementUtils {
   }
 
   initResizeTool() {
+    // اضافه کردن متد scaleResize به پروتوتایپ dia.Element
+    dia.Element.prototype.scaleResize = function (width, height, opt = {}) {
+      // دریافت اندازه فعلی
+      const currentSize = this.get("size");
+
+      // محاسبه نسبت مقیاس
+      const scaleX = width / currentSize.width;
+      const scaleY = height / currentSize.height;
+
+      // ذخیره موقعیت فعلی
+      const currentPosition = this.get("position");
+
+      // اعمال مقیاس
+      this.scale(scaleX, scaleY, opt);
+
+      // به‌روزرسانی اندازه در مدل
+      this.set("size", { width, height }, opt);
+
+      return this;
+    };
+
     dia.ElementView.prototype.showResizeHandles = function () {
       const element = this.model;
       const paper = this.paper;
@@ -287,12 +308,6 @@ export default class ElementUtils {
         const dx = evt.clientX - startX;
         const dy = evt.clientY - startY;
 
-        // تبدیل به مختصات محلی
-        const localPoint = paper.clientToLocalPoint({
-          x: evt.clientX,
-          y: evt.clientY,
-        });
-
         // محاسبه اندازه جدید بر اساس موقعیت دستگیره
         let newWidth = startWidth;
         let newHeight = startHeight;
@@ -323,8 +338,14 @@ export default class ElementUtils {
         newWidth = Math.max(30, newWidth);
         newHeight = Math.max(30, newHeight);
 
-        // تغییر اندازه و موقعیت المنت
-        element.resize(newWidth, newHeight);
+        // استفاده از متد scaleResize به جای resize معمولی
+        // این باعث می‌شود که پورت‌ها نیز با المنت مقیاس‌بندی شوند
+        if (element.get("scaleOnResize") !== false) {
+          element.scaleResize(newWidth, newHeight);
+        } else {
+          // استفاده از روش معمولی برای المنت‌هایی که scaleOnResize ندارند
+          element.resize(newWidth, newHeight);
+        }
         element.position(newX, newY);
 
         // به‌روزرسانی موقعیت دستگیره‌ها

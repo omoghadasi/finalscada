@@ -9,6 +9,8 @@ export default class ControlValve extends dia.Element {
         width: 60,
         height: 60,
       },
+      resizable: true,
+      scaleOnResize: true,
       open: 1,
       attrs: {
         root: {
@@ -100,6 +102,7 @@ export default class ControlValve extends dia.Element {
                              <rect @selector="pipeBody" />
                              <rect @selector="pipeEnd" />
                          `,
+            // استفاده از مقادیر ثابت برای size
             size: { width: 50, height: 30 },
             attrs: {
               portRoot: {
@@ -127,8 +130,8 @@ export default class ControlValve extends dia.Element {
               },
               pipeEnd: {
                 width: 10,
-                height: "calc(h+6)",
-                y: "calc(h / -2 - 3)",
+                height: "calc(h)",
+                y: "calc(h / -2)",
                 stroke: "gray",
                 strokeWidth: 3,
                 fill: "white",
@@ -175,5 +178,62 @@ export default class ControlValve extends dia.Element {
              <rect @selector="cover" />
              <text @selector="label" />
          `;
+  }
+
+  // اضافه کردن متد initialize برای مدیریت تغییر اندازه
+  initialize() {
+    super.initialize();
+    this.on("change:size", this.updatePortsOnResize, this);
+  }
+
+  // متد جدید برای به‌روزرسانی پورت‌ها هنگام تغییر اندازه
+  updatePortsOnResize() {
+    const size = this.get("size");
+    const scale = Math.min(size.width / 60, size.height / 60);
+
+    // به‌روزرسانی اندازه پورت‌ها بر اساس مقیاس
+    const ports = this.get("ports");
+    const updatedItems = ports.items.map((port) => {
+      // کپی از پورت موجود
+      const updatedPort = { ...port };
+
+      // تنظیم اندازه و موقعیت پورت بر اساس مقیاس
+      if (port.id === "left") {
+        updatedPort.attrs = {
+          ...port.attrs,
+          pipeEnd: {
+            ...port.attrs.pipeEnd,
+            width: 10 * scale,
+            height: 30 * scale,
+            y: -15 * scale, // محاسبه مستقیم به جای calc(h / -2)
+            strokeWidth: 3 * scale,
+            x: -50 * scale, // محاسبه مستقیم به جای calc(-1 * w)
+          },
+        };
+      } else if (port.id === "right") {
+        updatedPort.attrs = {
+          ...port.attrs,
+          pipeEnd: {
+            ...port.attrs.pipeEnd,
+            width: 10 * scale,
+            height: 30 * scale,
+            y: -15 * scale, // محاسبه مستقیم به جای calc(h / -2)
+            x: size.width - 10 * scale, // محاسبه مستقیم به جای calc(w - 10)
+            strokeWidth: 3 * scale,
+          },
+        };
+      }
+
+      return updatedPort;
+    });
+
+    // به‌روزرسانی پورت‌ها
+    this.prop("ports/items", updatedItems);
+
+    // به‌روزرسانی گروه پورت‌ها
+    this.prop("ports/groups/pipes/size", {
+      width: 50 * scale,
+      height: 30 * scale,
+    });
   }
 }
