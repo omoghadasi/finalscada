@@ -1,6 +1,6 @@
 <script setup>
-import { ref, onMounted, reactive, toRaw } from "vue";
-import { dia, shapes, util } from "@joint/core";
+import { ref, onMounted } from "vue";
+import { dia, shapes } from "@joint/core";
 import CustomShapes from "./shapes";
 import Controllers from "./controller";
 import ToolbarManager from "./utils/ToolbarManager";
@@ -18,19 +18,11 @@ const namespace = {
   ...shapes,
   ...CustomShapes,
 };
-// Custom view flags
-const POWER_FLAG = "POWER";
-const LIGHT_FLAG = "LIGHT";
-const FLOW_FLAG = "FLOW";
-const OPEN_FLAG = "OPEN";
-
 // Constants
 const LIQUID_COLOR = "#0EAD69";
 const MAX_LIQUID_COLOR = "#ED2637";
 const MIN_LIQUID_COLOR = "#FFD23F";
 const START_LIQUID = 70;
-const PRESSURE_COLOR = "#1446A0";
-const MAX_PRESSURE_COLOR = "#ED2637";
 
 const graph = new dia.Graph(
   {},
