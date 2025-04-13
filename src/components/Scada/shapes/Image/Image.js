@@ -7,6 +7,7 @@ export default class ImageElement extends dia.Element {
       type: "ImageElement",
       size: { width: 150, height: 150 },
       rotatable: true,
+      resizable: true,
       imageUrl: "",
       attrs: {
         body: {

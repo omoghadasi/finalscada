@@ -5,6 +5,7 @@ export default class ElementUtils {
   constructor(graph) {
     this.graph = graph;
     this.initRotationTool();
+    this.initResizeTool(); // اضافه کردن ابزار تغییر اندازه
   }
 
   initRotationTool() {
@@ -186,6 +187,219 @@ export default class ElementUtils {
           link.findView(paper).update();
         });
       }
+    };
+  }
+
+  initResizeTool() {
+    dia.ElementView.prototype.showResizeHandles = function () {
+      const element = this.model;
+      const paper = this.paper;
+
+      // حذف دستگیره‌های قبلی
+      if (this.resizeHandles) {
+        this.resizeHandles.remove();
+        document.removeEventListener(
+          "mousedown",
+          this._removeResizeHandlesListener
+        );
+        delete this._removeResizeHandlesListener;
+      }
+
+      // بررسی اینکه آیا المنت قابلیت تغییر اندازه دارد
+      if (element.get("resizable") === false) return;
+
+      // ایجاد گروه SVG برای دستگیره‌ها
+      const resizeHandlesGroup = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "g"
+      );
+      resizeHandlesGroup.classList.add("resize-handles-group");
+
+      // دریافت مختصات المنت
+      const elementBBox = element.getBBox();
+      const x = elementBBox.x;
+      const y = elementBBox.y;
+      const width = elementBBox.width;
+      const height = elementBBox.height;
+
+      // موقعیت دستگیره‌ها
+      const handlePositions = [
+        { x: x, y: y, cursor: "nw-resize", position: "top-left" },
+        { x: x + width, y: y, cursor: "ne-resize", position: "top-right" },
+        { x: x, y: y + height, cursor: "sw-resize", position: "bottom-left" },
+        {
+          x: x + width,
+          y: y + height,
+          cursor: "se-resize",
+          position: "bottom-right",
+        },
+      ];
+
+      // ایجاد دستگیره‌ها
+      const handles = [];
+      handlePositions.forEach((pos) => {
+        const handle = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "rect"
+        );
+        handle.setAttribute("x", pos.x - 5);
+        handle.setAttribute("y", pos.y - 5);
+        handle.setAttribute("width", 10);
+        handle.setAttribute("height", 10);
+        handle.setAttribute("fill", "#4285F4");
+        handle.setAttribute("stroke", "#ffffff");
+        handle.setAttribute("stroke-width", 1);
+        handle.setAttribute("cursor", pos.cursor);
+        handle.dataset.position = pos.position;
+
+        resizeHandlesGroup.appendChild(handle);
+        handles.push(handle);
+      });
+
+      paper.svg.appendChild(resizeHandlesGroup);
+      this.resizeHandles = resizeHandlesGroup;
+
+      // متغیرهای تغییر اندازه
+      let resizing = false;
+      let startX, startY, startWidth, startHeight;
+      let currentHandle = null;
+
+      // رویدادهای تغییر اندازه
+      const onMouseDown = (evt) => {
+        evt.stopPropagation();
+        resizing = true;
+        currentHandle = evt.target;
+
+        // ذخیره مقادیر اولیه
+        startX = evt.clientX;
+        startY = evt.clientY;
+        startWidth = elementBBox.width;
+        startHeight = elementBBox.height;
+
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+      };
+
+      const onMouseMove = (evt) => {
+        if (!resizing) return;
+
+        // محاسبه تغییرات
+        const dx = evt.clientX - startX;
+        const dy = evt.clientY - startY;
+
+        // تبدیل به مختصات محلی
+        const localPoint = paper.clientToLocalPoint({
+          x: evt.clientX,
+          y: evt.clientY,
+        });
+
+        // محاسبه اندازه جدید بر اساس موقعیت دستگیره
+        let newWidth = startWidth;
+        let newHeight = startHeight;
+        let newX = elementBBox.x;
+        let newY = elementBBox.y;
+
+        const position = currentHandle.dataset.position;
+
+        if (position === "top-right") {
+          newWidth = startWidth + dx;
+          newHeight = startHeight - dy;
+          newY = elementBBox.y + dy;
+        } else if (position === "bottom-right") {
+          newWidth = startWidth + dx;
+          newHeight = startHeight + dy;
+        } else if (position === "bottom-left") {
+          newWidth = startWidth - dx;
+          newHeight = startHeight + dy;
+          newX = elementBBox.x + dx;
+        } else if (position === "top-left") {
+          newWidth = startWidth - dx;
+          newHeight = startHeight - dy;
+          newX = elementBBox.x + dx;
+          newY = elementBBox.y + dy;
+        }
+
+        // اعمال حداقل اندازه
+        newWidth = Math.max(30, newWidth);
+        newHeight = Math.max(30, newHeight);
+
+        // تغییر اندازه و موقعیت المنت
+        element.resize(newWidth, newHeight);
+        element.position(newX, newY);
+
+        // به‌روزرسانی موقعیت دستگیره‌ها
+        this.updateResizeHandles();
+
+        // به‌روزرسانی لینک‌ها
+        this.updateConnectedLinks(element, paper);
+      };
+
+      const onMouseUp = () => {
+        if (resizing) {
+          resizing = false;
+          this.updateConnectedLinks(element, paper);
+          document.removeEventListener("mousemove", onMouseMove);
+          document.removeEventListener("mouseup", onMouseUp);
+        }
+      };
+
+      // اتصال رویدادها
+      handles.forEach((handle) => {
+        handle.addEventListener("mousedown", onMouseDown);
+        handle.addEventListener("touchstart", (evt) => {
+          evt.preventDefault();
+          const touch = evt.touches[0];
+          onMouseDown(
+            new MouseEvent("mousedown", {
+              clientX: touch.clientX,
+              clientY: touch.clientY,
+            })
+          );
+        });
+      });
+
+      // متد به‌روزرسانی موقعیت دستگیره‌ها
+      this.updateResizeHandles = function () {
+        const newBBox = element.getBBox();
+        const x = newBBox.x;
+        const y = newBBox.y;
+        const width = newBBox.width;
+        const height = newBBox.height;
+
+        const handlePositions = [
+          { x: x, y: y, position: "top-left" },
+          { x: x + width, y: y, position: "top-right" },
+          { x: x, y: y + height, position: "bottom-left" },
+          { x: x + width, y: y + height, position: "bottom-right" },
+        ];
+
+        // به‌روزرسانی موقعیت هر دستگیره
+        const handles = resizeHandlesGroup.querySelectorAll("rect");
+        handles.forEach((handle, index) => {
+          const pos = handlePositions[index];
+          handle.setAttribute("x", pos.x - 5);
+          handle.setAttribute("y", pos.y - 5);
+        });
+      };
+
+      // حذف دستگیره‌ها هنگام کلیک خارج
+      const removeResizeHandles = (evt) => {
+        if (
+          this.resizeHandles &&
+          !resizing &&
+          !Array.from(handles).includes(evt.target) &&
+          evt.target !== element.findView(paper).el
+        ) {
+          this.resizeHandles.remove();
+          this.resizeHandles = null;
+          document.removeEventListener("mousedown", removeResizeHandles);
+        }
+      };
+
+      this._removeResizeHandlesListener = removeResizeHandles;
+      setTimeout(() => {
+        document.addEventListener("mousedown", removeResizeHandles);
+      }, 100);
     };
   }
 

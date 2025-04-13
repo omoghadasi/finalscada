@@ -80,6 +80,13 @@ onMounted(() => {
     if (element.get("rotatable")) {
       elementView.showRotateHandle();
     }
+
+    // نمایش دستگیره‌های تغییر اندازه اگر المنت قابلیت تغییر اندازه دارد
+    if (element.get("resizable") !== false) {
+      console.log("yes");
+
+      elementView.showResizeHandles();
+    }
   });
 
   const contextMenuManager = new ContextMenuManager(
