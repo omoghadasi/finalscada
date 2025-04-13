@@ -57,6 +57,31 @@ onMounted(() => {
     },
   });
 
+  // فعال کردن ابزار چرخش
+  paper.options.defaultConnector = { name: "rounded" };
+  paper.options.defaultRouter = { name: "orthogonal" };
+  paper.options.interactive = {
+    vertexAdd: false,
+    vertexRemove: false,
+    elementMove: true,
+    linkConnect: false,
+    labelMove: false,
+    arrowheadMove: false,
+    vertexMove: false,
+    useLinkTools: false,
+    elementRotate: true, // فعال کردن چرخش المنت‌ها
+  };
+
+  // اضافه کردن ابزار چرخش به همه المنت‌ها
+  // در بخش mounted یا initJointJS
+  paper.on("element:pointerdown", (elementView, evt) => {
+    const element = elementView.model;
+    // بررسی اینکه آیا المنت قابلیت چرخش دارد
+    if (element.get("rotatable")) {
+      elementView.showRotateHandle();
+    }
+  });
+
   const contextMenuManager = new ContextMenuManager(
     jointEl.value,
     graph,
@@ -686,6 +711,11 @@ onMounted(() => {
 .canvas {
   flex: 1;
   height: 100%;
+}
+
+:deep(.rotate-handle) {
+  cursor: crosshair;
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
 }
 
 :deep(.toolbar-item) {

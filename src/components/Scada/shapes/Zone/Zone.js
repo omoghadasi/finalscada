@@ -9,6 +9,7 @@ export default class Zone extends dia.Element {
         width: 120,
         height: 40,
       },
+      rotatable: true,
       attrs: {
         body: {
           fill: "#ffffff",

@@ -8,6 +8,7 @@ export default class ConicTank extends dia.Element {
         width: 160,
         height: 100,
       },
+      rotatable: true,
       attrs: {
         root: {
           magnetSelector: "body",

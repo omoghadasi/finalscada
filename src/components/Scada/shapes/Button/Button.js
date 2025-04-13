@@ -6,6 +6,7 @@ export default class ButtonElement extends dia.Element {
       ...super.defaults,
       type: "ButtonElement",
       size: { width: 120, height: 40 },
+      rotatable: true,
       attrs: {
         body: {
           refWidth: "100%",

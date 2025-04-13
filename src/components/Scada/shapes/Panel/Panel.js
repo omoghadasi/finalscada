@@ -10,6 +10,7 @@ export default class Panel extends dia.Element {
         width: 100,
         height: 230,
       },
+      rotatable: true,
       level: 0,
       attrs: {
         root: {

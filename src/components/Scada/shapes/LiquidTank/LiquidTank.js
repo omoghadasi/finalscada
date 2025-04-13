@@ -8,6 +8,7 @@ export default class LiquidTank extends dia.Element {
         width: 160,
         height: 300,
       },
+      rotatable: true,
       attrs: {
         root: {
           magnetSelector: "body",

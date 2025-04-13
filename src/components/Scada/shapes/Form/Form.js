@@ -6,6 +6,7 @@ export default class FormElement extends dia.Element {
       ...super.defaults,
       type: "FormElement",
       size: { width: 200, height: 180 },
+      rotatable: true,
       attrs: {
         body: {
           refWidth: "100%",

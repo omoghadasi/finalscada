@@ -11,6 +11,7 @@ export default class Pump extends dia.Element {
         width: 100,
         height: 100,
       },
+      rotatable: true,
       power: 0,
       attrs: {
         root: {

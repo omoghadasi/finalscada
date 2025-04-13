@@ -8,6 +8,7 @@ export default class HandValve extends dia.Element {
         width: 50,
         height: 50,
       },
+      rotatable: true,
       power: 0,
       attrs: {
         root: {
