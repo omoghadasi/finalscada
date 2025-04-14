@@ -577,12 +577,12 @@ onMounted(() => {
   // chatrs
 
   // Transform the paper so that the content fits the viewport
-  paper.transformToFitContent({
-    useModelGeometry: true,
-    // padding: { top: 80, bottom: 10, horizontal: 50 },
-    // horizontalAlign: "middle",
-    // verticalAlign: "top",
-  });
+  // paper.transformToFitContent({
+  // useModelGeometry: true,
+  // padding: { top: 80, bottom: 10, horizontal: 50 },
+  // horizontalAlign: "middle",
+  // verticalAlign: "top",
+  // });
 
   // Start rendering the content and highlighters
   paper.unfreeze();
