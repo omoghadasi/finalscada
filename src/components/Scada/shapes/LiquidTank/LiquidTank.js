@@ -59,6 +59,40 @@ export default class LiquidTank extends dia.Element {
           fill: "#350100",
         },
       },
+      ports: {
+        groups: {
+          main: {
+            position: 'absolute',
+            attrs: {
+              portBody: {
+                r: 6,
+                magnet: true,
+                stroke: "#3498db",
+                strokeWidth: 2,
+                fill: "#fff",
+              },
+              portLabel: {
+                fontSize: 10,
+                fill: "#333",
+                textAnchor: "middle",
+                textVerticalAnchor: "middle",
+                refX: 12, // فاصله متن از دایره
+              },
+            },
+            markup: [
+              {
+                tagName: "circle",
+                selector: "portBody",
+              },
+              {
+                tagName: "text",
+                selector: "portLabel",
+              },
+            ],
+          },
+        },
+        items: []
+      }
     };
   }
 
@@ -69,6 +103,17 @@ export default class LiquidTank extends dia.Element {
                <rect @selector="top"/>
                <text @selector="label" />
            `;
+    // تعریف markup برای پورت‌ها
+    this.portMarkup = [
+      {
+        tagName: "circle",
+        selector: "portBody", // Changed from 'circle' to 'portBody'
+      },
+      {
+        tagName: "text",
+        selector: "portLabel", // Changed from 'text' to 'portLabel'
+      },
+    ];
   }
 
   get level() {

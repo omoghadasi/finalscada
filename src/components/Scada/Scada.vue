@@ -129,6 +129,15 @@ onMounted(() => {
     position: { x: 30, y: 50 },
   });
 
+  // tank1.addPort({
+  //   id: "p5",
+  //   group: "main",
+  //   args: {
+  //     x: "calc(w / 3)",
+  //     y: 30,
+  //   },
+  // });
+
   // When the tank level changes, update the panel level and color.
   panel1.listenTo(tank1, "change:level", (_, level) => {
     const color =
