@@ -56,13 +56,12 @@ export default class PortManager {
           <strong>Existing Ports:</strong>
           <ul style="margin-top: 5px; padding-left: 20px;">
             ${existingPorts
-              .map(
-                (port) =>
-                  `<li>${port.id} (${port.group || "default"}) - Link Type: ${
-                    port.linkType || "default"
-                  }</li>`
-              )
-              .join("")}
+          .map(
+            (port) =>
+              `<li>${port.id} (${port.group || "default"}) - Link Type: ${port.linkType || "default"
+              }</li>`
+          )
+          .join("")}
           </ul>
         </div>
       `;
@@ -171,6 +170,7 @@ export default class PortManager {
       default:
         portColor = "#7f8c8d"; // خاکستری
     }
+    const portPosition = this.handlePortPosition(position, element);
 
     // تنظیمات پورت
     const portConfig = {
@@ -194,15 +194,9 @@ export default class PortManager {
           pointerEvents: "none",
         },
       },
-      position: {
-        name: position,
-        args: { dx: 0, dy: 0 },
-      },
-      label: {
-        position: {
-          name: position,
-          args: { offset: 15 },
-        },
+      args: {
+        x: portPosition.x,
+        y: portPosition.y,
       },
     };
 
@@ -260,8 +254,8 @@ export default class PortManager {
         <div>
           <strong>${port.id}</strong> (${port.group || "default"})
           - Link Type: <span style="color: ${this.getLinkTypeColor(
-            port.linkType
-          )}">${port.linkType || "default"}</span>
+          port.linkType
+        )}">${port.linkType || "default"}</span>
           ${port.attrs.text?.text ? ` - ${port.attrs.text.text}` : ""}
         </div>
         <button class="delete-port-btn swal2-styled swal2-cancel" data-port-index="${index}" style="padding: 5px 10px; font-size: 12px; margin: 0;">Delete</button>
@@ -341,6 +335,39 @@ export default class PortManager {
         return "#9b59b6"; // بنفش
       default:
         return "#7f8c8d"; // خاکستری
+    }
+  }
+
+
+  handlePortPosition(position, element) {
+    // Get element size
+    const elementSize = element.size();
+    const width = elementSize.width;
+    const height = elementSize.height;
+
+    switch (position) {
+      case "left":
+        return {
+          x: -(width), // Left edge
+          y: Math.max(0, Math.round(Math.random() * height)), // Centered vertically
+        };
+      case "right":
+        return {
+          x: width, // Right edge  
+          y: Math.max(0, Math.round(Math.random() * height)), // Centered vertically
+        };
+      case "top":
+        return {
+          x: Math.max(0, Math.round(Math.random() * width)), // Centered horizontally
+          y: -(height) // Top edge
+        };
+      case "bottom":
+        return {
+          x: Math.max(0, Math.round(Math.random() * width)), // Centered horizontally
+          y: height // Bottom edge
+        };
+      default:
+        return { x: 0, y: 0 };
     }
   }
 }

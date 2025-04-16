@@ -107,14 +107,14 @@ onMounted(() => {
   );
   toolbarManager.init();
 
-  const button = new namespace.ButtonElement({ position: { x: 100, y: 100 } });
+  const button = new namespace.ButtonElement({ position: { x: 1100, y: 100 } });
   button.on("button:click", () => {
     console.log("Button clicked with event!");
   });
   button.addTo(graph);
 
   const form = new namespace.FormElement({
-    position: { x: 100, y: 200 },
+    position: { x: 1100, y: 200 },
   });
 
   form.on("form:submit", (data) => {
