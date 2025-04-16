@@ -10,6 +10,7 @@ import WatcherManager from "./utils/WatcherManager";
 import PortManager from "./utils/PortManager";
 import ContextMenuManager from "./utils/ContextMenuManager";
 import ElementUtils from "./utils/ElementUtils";
+import loadGraphFromJSON from "./utils/loadGraphFromJson";
 
 const jointEl = ref(null);
 const toolbarEl = ref(null);
@@ -35,8 +36,8 @@ onMounted(() => {
   fetch("/graphData.json")
     .then((response) => response.json())
     .then((data) => {
-      graph.fromJSON(data);
-      // console.log("salam");
+      // loadGraphFromJSON(graph, data);
+      console.log("data", data);
     })
     .catch((error) => {
       console.error("Error loading graph data:", error);
@@ -696,8 +697,6 @@ onMounted(() => {
     }
     progress2.setProgress(pressure2 / 10, (pressure2 / 10).toString());
   }, 1000);
-  console.log(graph.toJSON());
-  // graph.fromJSON()
 });
 </script>
 
