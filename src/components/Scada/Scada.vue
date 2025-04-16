@@ -32,6 +32,16 @@ const portManager = new PortManager(graph);
 const elementUtils = new ElementUtils(graph);
 
 onMounted(() => {
+  fetch("/graphData.json")
+    .then((response) => response.json())
+    .then((data) => {
+      graph.fromJSON(data);
+      // console.log("salam");
+    })
+    .catch((error) => {
+      console.error("Error loading graph data:", error);
+    });
+
   const paper = new dia.Paper({
     el: jointEl.value,
     cellViewNamespace: namespace,
