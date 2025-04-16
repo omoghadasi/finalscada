@@ -74,7 +74,7 @@ onMounted(() => {
 
   // اضافه کردن ابزار چرخش به همه المنت‌ها
   // در بخش mounted یا initJointJS
-  paper.on("element:pointerdown", (elementView, evt) => {
+  paper.on("element:pointerdown element:pointermove", (elementView, evt) => {
     const element = elementView.model;
     // بررسی اینکه آیا المنت قابلیت چرخش دارد
     if (element.get("rotatable")) {
