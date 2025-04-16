@@ -348,7 +348,7 @@ export default class PortManager {
     switch (position) {
       case "left":
         return {
-          x: -(width), // Left edge
+          x: 0, // Left edge
           y: Math.max(0, Math.round(Math.random() * height)), // Centered vertically
         };
       case "right":
@@ -359,7 +359,7 @@ export default class PortManager {
       case "top":
         return {
           x: Math.max(0, Math.round(Math.random() * width)), // Centered horizontally
-          y: -(height) // Top edge
+          y: 0 // Top edge
         };
       case "bottom":
         return {
