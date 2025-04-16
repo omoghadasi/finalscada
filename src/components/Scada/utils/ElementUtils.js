@@ -120,6 +120,11 @@ export default class ElementUtils {
         // چرخش المان
         element.rotate(newAngle, { absolute: true });
 
+        // به‌روزرسانی موقعیت دستگیره‌ها با زاویه جدید
+        if (this.resizeHandles) {
+          this.updateResizeHandles();
+        }
+
         // به‌روزرسانی موقعیت دستگیره
         const newBBox = element.getBBox();
         const newCenterX = newBBox.x + newBBox.width / 2;
@@ -381,25 +386,45 @@ export default class ElementUtils {
 
       // متد به‌روزرسانی موقعیت دستگیره‌ها
       this.updateResizeHandles = function () {
+        const element = this.model;
         const newBBox = element.getBBox();
-        const x = newBBox.x;
-        const y = newBBox.y;
-        const width = newBBox.width;
-        const height = newBBox.height;
+        const angle = element.get('angle') || 0; // دریافت زاویه چرخش المان
 
-        const handlePositions = [
-          { x: x, y: y, position: "top-left" },
-          { x: x + width, y: y, position: "top-right" },
-          { x: x, y: y + height, position: "bottom-left" },
-          { x: x + width, y: y + height, position: "bottom-right" },
+        // محاسبه نقطه مرکز المان
+        const centerX = newBBox.x + newBBox.width / 2;
+        const centerY = newBBox.y + newBBox.height / 2;
+
+        // موقعیت اولیه نقاط قبل از چرخش
+        const corners = [
+          { x: newBBox.x, y: newBBox.y }, // top-left
+          { x: newBBox.x + newBBox.width, y: newBBox.y }, // top-right
+          { x: newBBox.x, y: newBBox.y + newBBox.height }, // bottom-left
+          { x: newBBox.x + newBBox.width, y: newBBox.y + newBBox.height } // bottom-right
         ];
 
-        // به‌روزرسانی موقعیت هر دستگیره
-        const handles = resizeHandlesGroup.querySelectorAll("rect");
+        // تابع کمکی برای چرخش یک نقطه حول مرکز
+        const rotatePoint = (x, y, centerX, centerY, angle) => {
+          const radians = (angle * Math.PI) / 180;
+          const cos = Math.cos(radians);
+          const sin = Math.sin(radians);
+
+          const rotatedX = (x - centerX) * cos - (y - centerY) * sin + centerX;
+          const rotatedY = (x - centerX) * sin + (y - centerY) * cos + centerY;
+
+          return { x: rotatedX, y: rotatedY };
+        };
+
+        // چرخش هر نقطه
+        const rotatedCorners = corners.map(corner =>
+          rotatePoint(corner.x, corner.y, centerX, centerY, angle)
+        );
+
+        // به‌روزرسانی موقعیت دستگیره‌ها
+        const handles = this.resizeHandles.querySelectorAll('rect');
         handles.forEach((handle, index) => {
-          const pos = handlePositions[index];
-          handle.setAttribute("x", pos.x - 5);
-          handle.setAttribute("y", pos.y - 5);
+          const pos = rotatedCorners[index];
+          handle.setAttribute('x', pos.x - 5);
+          handle.setAttribute('y', pos.y - 5);
         });
       };
 
@@ -446,7 +471,7 @@ export default class ElementUtils {
       const existingPos = element.position();
       const distance = Math.sqrt(
         Math.pow(newPos.x - existingPos.x, 2) +
-          Math.pow(newPos.y - existingPos.y, 2)
+        Math.pow(newPos.y - existingPos.y, 2)
       );
 
       // اگر فاصله کمتر از حد آستانه بود
@@ -456,9 +481,8 @@ export default class ElementUtils {
           // نمایش پیام تأیید
           Swal.fire({
             title: "Connect Elements",
-            text: `Do you want to connect ${
-              newElement.get("type") || newElement.attributes.type
-            } to ${element.get("type") || element.attributes.type}?`,
+            text: `Do you want to connect ${newElement.get("type") || newElement.attributes.type
+              } to ${element.get("type") || element.attributes.type}?`,
             icon: "question",
             showCancelButton: true,
             confirmButtonText: "Yes",
