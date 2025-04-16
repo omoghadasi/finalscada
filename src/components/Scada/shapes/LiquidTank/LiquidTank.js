@@ -66,12 +66,13 @@ export default class LiquidTank extends dia.Element {
             attrs: {
               portBody: {
                 r: 6,
-                magnet: true,
+                magnet: false,
                 stroke: "#3498db",
                 strokeWidth: 2,
                 fill: "#fff",
               },
               portLabel: {
+                magnet: false,
                 fontSize: 10,
                 fill: "#333",
                 textAnchor: "middle",
@@ -95,12 +96,13 @@ export default class LiquidTank extends dia.Element {
             attrs: {
               portBody: {
                 r: 6,
-                magnet: true,
+                magnet: false,
                 stroke: "#3498db",
                 strokeWidth: 2,
                 fill: "#fff",
               },
               portLabel: {
+                magnet: false,
                 fontSize: 10,
                 fill: "#333",
                 textAnchor: "middle",
@@ -124,12 +126,13 @@ export default class LiquidTank extends dia.Element {
             attrs: {
               portBody: {
                 r: 6,
-                magnet: true,
+                magnet: false,
                 stroke: "#3498db",
                 strokeWidth: 2,
                 fill: "#fff",
               },
               portLabel: {
+                magnet: false,
                 fontSize: 10,
                 fill: "#333",
                 textAnchor: "middle",

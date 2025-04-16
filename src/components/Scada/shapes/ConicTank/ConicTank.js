@@ -77,7 +77,7 @@ export default class ConicTank extends dia.Element {
             attrs: {
               portBody: {
                 r: 6,
-                magnet: true,
+                magnet: false,
                 stroke: "#3498db",
                 strokeWidth: 2,
                 fill: "#fff",
@@ -106,7 +106,7 @@ export default class ConicTank extends dia.Element {
             attrs: {
               portBody: {
                 r: 6,
-                magnet: true,
+                magnet: false,
                 stroke: "#3498db",
                 strokeWidth: 2,
                 fill: "#fff",
@@ -135,7 +135,7 @@ export default class ConicTank extends dia.Element {
             attrs: {
               portBody: {
                 r: 6,
-                magnet: true,
+                magnet: false,
                 stroke: "#3498db",
                 strokeWidth: 2,
                 fill: "#fff",

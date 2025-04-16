@@ -180,12 +180,13 @@ export default class PortManager {
       attrs: {
         circle: {
           r: 6,
-          magnet: true,
+          magnet: false,
           stroke: portColor,
           strokeWidth: 2,
           fill: "#fff",
         },
         text: {
+          magnet: false,
           text: label || portId,
           fill: "#333",
           fontSize: 10,
