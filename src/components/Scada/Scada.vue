@@ -18,11 +18,6 @@ const namespace = {
   ...shapes,
   ...CustomShapes,
 };
-// Constants
-const LIQUID_COLOR = "#0EAD69";
-const MAX_LIQUID_COLOR = "#ED2637";
-const MIN_LIQUID_COLOR = "#FFD23F";
-const START_LIQUID = 70;
 
 const graph = new dia.Graph(
   {},
@@ -140,12 +135,7 @@ onMounted(() => {
 
   // When the tank level changes, update the panel level and color.
   panel1.listenTo(tank1, "change:level", (_, level) => {
-    const color =
-      level > 80
-        ? MAX_LIQUID_COLOR
-        : level < 20
-        ? MIN_LIQUID_COLOR
-        : LIQUID_COLOR;
+    const color = level > 80 ? "#ED2637" : level < 20 ? "#FFD23F" : "#0EAD69";
     panel1.set({ level, color });
   });
 
@@ -605,7 +595,7 @@ onMounted(() => {
   // Simulation
   // A dummy system for the purpose of this demo
 
-  tank1.level = START_LIQUID;
+  tank1.level = 70;
 
   let extraLiquid = 0;
 
@@ -696,6 +686,8 @@ onMounted(() => {
     }
     progress2.setProgress(pressure2 / 10, (pressure2 / 10).toString());
   }, 1000);
+  console.log(graph.toJSON());
+  // graph.fromJSON()
 });
 </script>
 
