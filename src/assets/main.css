@@ -162,3 +162,8 @@ div:where(.swal2-container) div:where(.swal2-radio),
 div:where(.swal2-container) label:where(.swal2-checkbox) {
   margin: 0 !important;
 }
+
+.selected-element {
+  stroke: #3498db;
+  stroke-width: 3px;
+}

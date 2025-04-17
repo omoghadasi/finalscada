@@ -11,9 +11,11 @@ export default function ZoomController(paper, currentDocument) {
     });
 
     paper.on("blank:pointerdown", (evt) => {
-        isPanning = true;
-        startPosition = { x: evt.clientX, y: evt.clientY };
-        paper.el.style.cursor = "grab"; // تغییر نشانگر موس
+        if (!evt.ctrlKey) {
+            isPanning = true;
+            startPosition = { x: evt.clientX, y: evt.clientY };
+            paper.el.style.cursor = "grab"; // تغییر نشانگر موس
+        }
     });
 
     currentDocument.addEventListener("mousemove", (evt) => {
