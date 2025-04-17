@@ -20,7 +20,7 @@ export default {
     // مقداردهی اولیه کنترلر انتخاب چندگانه
     const multiSelect = MultiSelectController(paper, graph);
 
-    // ZoomController(paper, document);
+    ZoomController(paper, document);
     graph.getElements().forEach((cell) => {
       switch (cell.get("type")) {
         case "ControlValve":
