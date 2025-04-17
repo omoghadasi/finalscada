@@ -1,4 +1,5 @@
 import { util } from '@joint/core'
+import { toast } from 'vue3-toastify';
 export default function MultiSelectController(paper, graph) {
     let selectedElements = [];
     let isSelecting = false;
@@ -197,9 +198,13 @@ export default function MultiSelectController(paper, graph) {
                 });
                 // add json to clipboard
                 navigator.clipboard.writeText(JSON.stringify(copiedElements)).then(() => {
-                    console.log('کپی به کلیپ بورد انجام شد');
+                    toast("Copied to clipboard!", {
+                        "type": "success",
+                    })
                 }).catch((err) => {
-                    console.error('خطا در کپی به کلیپ بورد:', err);
+                    toast("Error copying to clipboard: " + err, {
+                        "type": "error",
+                    })
                 });
             }
         }
@@ -213,13 +218,35 @@ export default function MultiSelectController(paper, graph) {
                 });
                 // add json to clipboard
                 navigator.clipboard.writeText(JSON.stringify(cutElements)).then(() => {
-                    console.log('کات به کلیپ بورد انجام شد');
+                    toast("Copied to clipboard!", {
+                        "type": "success",
+                    })
                 }).catch((err) => {
-                    console.error('خطا در کات به کلیپ بورد:', err);
+                    toast("Error copying to clipboard: " + err, {
+                        "type": "error",
+                    })
                 });
 
+                selectedElements.forEach((element) => {
+                    if (element.findView(paper).rotateHandle) {
+                        element.findView(paper).rotateHandle.remove();
+                        document.removeEventListener(
+                            "mousedown",
+                            element.findView(paper)._removeRotateHandleListener
+                        );
+                    }
+                    if (element.findView(paper).resizeHandles) {
+                        element.findView(paper).resizeHandles.remove();
+                        document.removeEventListener(
+                            "mousedown",
+                            element.findView(paper)._removeResizeHandlesListener
+                        );
+                    }
+
+                })
                 // remove elements from graph
                 graph.removeCells(selectedElements);
+                selectedElements = []
             }
         }
 
@@ -234,9 +261,11 @@ export default function MultiSelectController(paper, graph) {
                         y: element.position.y + 20,
                     }
                 });
-                const newElement = graph.addCells(pastedElements)
+                graph.addCells(pastedElements)
             }).catch((err) => {
-                console.error('خطا در چسباندن از کلیپ بورد:', err);
+                toast("Unable to Access Pasting: " + err, {
+                    "type": "error",
+                })
             });
 
         }
