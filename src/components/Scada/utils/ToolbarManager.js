@@ -29,7 +29,7 @@ export default class ToolbarManager {
     this.toolbarPaper = new dia.Paper({
       el: this.toolbarEl,
       width: 200,
-      height: 800,
+      height: this.jointEl.parentNode.clientHeight,
       model: new dia.Graph(),
       interactive: false,
       background: { color: "#f0f0f0" },

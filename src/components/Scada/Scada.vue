@@ -14,6 +14,7 @@ import loadGraphFromJSON from "./utils/loadGraphFromJson";
 
 const jointEl = ref(null);
 const toolbarEl = ref(null);
+const scadaContainer = ref(null);
 
 const namespace = {
   ...shapes,
@@ -47,8 +48,8 @@ onMounted(() => {
     el: jointEl.value,
     cellViewNamespace: namespace,
     model: graph,
-    width: 1600,
-    height: 800,
+    width: jointEl.value.offsetWidth, // عرض کانتینر
+    height: scadaContainer.value.clientHeight, // ارتفاع کانتینر
     gridSize: 10,
     drawGrid: "mesh",
     interactive: true,
@@ -701,7 +702,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="scada-container">
+  <div ref="scadaContainer" class="scada-container">
     <div ref="toolbarEl" class="toolbar"></div>
     <div ref="jointEl" class="canvas"></div>
   </div>
@@ -711,7 +712,7 @@ onMounted(() => {
 .scada-container {
   display: flex;
   width: 100%;
-  height: 100%;
+  height: 100vh;
 }
 
 .toolbar {
@@ -726,6 +727,7 @@ onMounted(() => {
 .canvas {
   flex: 1;
   height: 100%;
+  position: relative;
 }
 
 :deep(.rotate-handle) {
