@@ -16,10 +16,7 @@ export default {
   },
   initControls: (paper) => {
     const graph = paper.model;
-
-    // مقداردهی اولیه کنترلر انتخاب چندگانه
-    const multiSelect = MultiSelectController(paper, graph);
-
+    MultiSelectController(paper, graph);
     ZoomController(paper, document);
     graph.getElements().forEach((cell) => {
       switch (cell.get("type")) {
@@ -39,8 +36,5 @@ export default {
           break;
       }
     });
-
-    // دسترسی به المنت‌های انتخاب‌شده
-    console.log(multiSelect.getSelectedElements());
   },
 };

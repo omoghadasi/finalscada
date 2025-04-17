@@ -1,3 +1,4 @@
+import { util } from '@joint/core'
 export default function MultiSelectController(paper, graph) {
     let selectedElements = [];
     let isSelecting = false;
@@ -152,7 +153,7 @@ export default function MultiSelectController(paper, graph) {
     });
 
     // اضافه کردن رویداد Ctrl + A
-    document.addEventListener('keydown', (evt) => {
+    document.addEventListener('keydown', async (evt) => {
         if (evt.ctrlKey && evt.key === 'a') {
             evt.preventDefault(); // جلوگیری از رفتار پیش‌فرض مرورگر
 
@@ -186,6 +187,58 @@ export default function MultiSelectController(paper, graph) {
                     },
                 });
             });
+        }
+
+        if (evt.ctrlKey && evt.key === 'c') {
+            if (selectedElements) {
+                evt.preventDefault();
+                const copiedElements = selectedElements.map((element) => {
+                    return { ...element.toJSON() }; // فرض بر این است که toJSON() یک شیء قابل کپی برمی‌گرداند
+                });
+                // add json to clipboard
+                navigator.clipboard.writeText(JSON.stringify(copiedElements)).then(() => {
+                    console.log('کپی به کلیپ بورد انجام شد');
+                }).catch((err) => {
+                    console.error('خطا در کپی به کلیپ بورد:', err);
+                });
+            }
+        }
+
+        if (evt.ctrlKey && evt.key === "x") {
+            // cut to clipboard
+            if (selectedElements) {
+                evt.preventDefault();
+                const cutElements = selectedElements.map((element) => {
+                    return { ...element.toJSON() }; // فرض بر این است که toJSON() یک شیء قابل کپی برمی‌گرداند
+                });
+                // add json to clipboard
+                navigator.clipboard.writeText(JSON.stringify(cutElements)).then(() => {
+                    console.log('کات به کلیپ بورد انجام شد');
+                }).catch((err) => {
+                    console.error('خطا در کات به کلیپ بورد:', err);
+                });
+
+                // remove elements from graph
+                graph.removeCells(selectedElements);
+            }
+        }
+
+        if (evt.ctrlKey && evt.key === "v") {
+            evt.preventDefault();
+            navigator.clipboard.readText().then((text) => {
+                const pastedElements = JSON.parse(text);
+                pastedElements.forEach((element) => {
+                    element.id = util.uuid()
+                    element.position = {
+                        x: element.position.x + 20,
+                        y: element.position.y + 20,
+                    }
+                });
+                const newElement = graph.addCells(pastedElements)
+            }).catch((err) => {
+                console.error('خطا در چسباندن از کلیپ بورد:', err);
+            });
+
         }
     });
 
