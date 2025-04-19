@@ -27,12 +27,15 @@ export default class ElementUtils {
       const translate = paper.translate();
       const tx = translate.tx;
       const ty = translate.ty;
+      const scale = paper.scale();
+      const sx = scale.sx;
+      const sy = scale.sy;
+
 
       // ایجاد دستگیره چرخش
       const elementBBox = element.getBBox();
-      const centerX = elementBBox.x + ((elementBBox.width / 2) + tx);
-      const handleY = elementBBox.y - 20 + ty;
-      console.log(elementBBox.y - 20, elementBBox.y - 20 + ty);
+      const centerX = (elementBBox.x + ((elementBBox.width / 2) + tx)) * sx;
+      const handleY = (elementBBox.y - 20 + ty) * sy;
 
       // ایجاد گروه SVG
       const rotateHandleGroup = document.createElementNS(
@@ -57,7 +60,7 @@ export default class ElementUtils {
         "line"
       );
       connector.setAttribute("x1", centerX);
-      connector.setAttribute("y1", elementBBox.y + ty);
+      connector.setAttribute("y1", (elementBBox.y + ty) * sy);
       connector.setAttribute("x2", centerX);
       connector.setAttribute("y2", handleY);
       connector.setAttribute("stroke", "#4285F4");
@@ -249,15 +252,18 @@ export default class ElementUtils {
 
       // دریافت مختصات المنت
       const translate = paper.translate();
+      const scale = paper.scale();
+
       const tx = translate.tx;
       const ty = translate.ty;
-      console.log(translate);
+      const sx = scale.sx;
+      const sy = scale.sy;
 
       const elementBBox = element.getBBox();
-      const x = elementBBox.x + tx;
-      const y = elementBBox.y + ty;
-      const width = elementBBox.width;
-      const height = elementBBox.height;
+      const x = (elementBBox.x + tx) * sx;
+      const y = (elementBBox.y + ty) * sy;
+      const width = elementBBox.width * sx;
+      const height = elementBBox.height * sy;
 
       // موقعیت دستگیره‌ها
       const handlePositions = [
