@@ -90,7 +90,8 @@ export default class ControlValve extends dia.Element {
       },
       ports: {
         groups: {
-          pipes: {
+          inout: {
+            linkType: 'pipe',
             position: {
               name: "absolute",
               args: {
@@ -142,7 +143,8 @@ export default class ControlValve extends dia.Element {
         items: [
           {
             id: "left",
-            group: "pipes",
+            group: "inout",
+            linkType: 'pipe',
             z: 0,
             attrs: {
               pipeBody: {
@@ -155,7 +157,8 @@ export default class ControlValve extends dia.Element {
           },
           {
             id: "right",
-            group: "pipes",
+            group: "inout",
+            linkType: 'pipe',
             z: 0,
             attrs: {
               pipeEnd: {
@@ -179,12 +182,12 @@ export default class ControlValve extends dia.Element {
              <text @selector="label" />
          `;
   }
-
+  // todo badan
   // اضافه کردن متد initialize برای مدیریت تغییر اندازه
-  initialize() {
-    super.initialize();
-    this.on("change:size", this.updatePortsOnResize, this);
-  }
+  // initialize() {
+  //   super.initialize();
+  //   // this.on("change:size", this.updatePortsOnResize, this);
+  // }
 
   // متد جدید برای به‌روزرسانی پورت‌ها هنگام تغییر اندازه
   updatePortsOnResize() {

@@ -66,7 +66,8 @@ export default class Pump extends dia.Element {
       },
       ports: {
         groups: {
-          pipes: {
+          inout: {
+            linkType: 'pipe',
             position: {
               name: "line",
               args: {
@@ -117,7 +118,8 @@ export default class Pump extends dia.Element {
         items: [
           {
             id: "left",
-            group: "pipes",
+            group: "inout",
+            linkType: 'pipe',
             z: 1,
             attrs: {
               pipeBody: {
@@ -130,7 +132,8 @@ export default class Pump extends dia.Element {
           },
           {
             id: "right",
-            group: "pipes",
+            group: "inout",
+            linkType: 'pipe',
             z: 0,
             attrs: {
               pipeEnd: {

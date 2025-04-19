@@ -62,7 +62,8 @@ export default class HandValve extends dia.Element {
       },
       ports: {
         groups: {
-          pipes: {
+          inout: {
+            linkType: 'pipe',
             position: {
               name: "absolute",
               args: {
@@ -113,7 +114,8 @@ export default class HandValve extends dia.Element {
         items: [
           {
             id: "left",
-            group: "pipes",
+            group: "inout",
+            linkType: 'pipe',
             z: 0,
             attrs: {
               pipeBody: {
@@ -126,7 +128,8 @@ export default class HandValve extends dia.Element {
           },
           {
             id: "right",
-            group: "pipes",
+            group: "inout",
+            linkType: 'pipe',
             z: 0,
             attrs: {
               pipeEnd: {
