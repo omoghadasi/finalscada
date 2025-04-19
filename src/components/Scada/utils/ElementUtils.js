@@ -23,10 +23,16 @@ export default class ElementUtils {
         delete this._removeRotateHandleListener;
       }
 
+      // دریافت مقدار translate
+      const translate = paper.translate();
+      const tx = translate.tx;
+      const ty = translate.ty;
+
       // ایجاد دستگیره چرخش
       const elementBBox = element.getBBox();
-      const centerX = elementBBox.x + elementBBox.width / 2;
-      const handleY = elementBBox.y - 20;
+      const centerX = elementBBox.x + ((elementBBox.width / 2) + tx);
+      const handleY = elementBBox.y - 20 + ty;
+      console.log(elementBBox.y - 20, elementBBox.y - 20 + ty);
 
       // ایجاد گروه SVG
       const rotateHandleGroup = document.createElementNS(
@@ -51,7 +57,7 @@ export default class ElementUtils {
         "line"
       );
       connector.setAttribute("x1", centerX);
-      connector.setAttribute("y1", elementBBox.y);
+      connector.setAttribute("y1", elementBBox.y + ty);
       connector.setAttribute("x2", centerX);
       connector.setAttribute("y2", handleY);
       connector.setAttribute("stroke", "#4285F4");
@@ -242,9 +248,14 @@ export default class ElementUtils {
       resizeHandlesGroup.classList.add("resize-handles-group");
 
       // دریافت مختصات المنت
+      const translate = paper.translate();
+      const tx = translate.tx;
+      const ty = translate.ty;
+      console.log(translate);
+
       const elementBBox = element.getBBox();
-      const x = elementBBox.x;
-      const y = elementBBox.y;
+      const x = elementBBox.x + tx;
+      const y = elementBBox.y + ty;
       const width = elementBBox.width;
       const height = elementBBox.height;
 
