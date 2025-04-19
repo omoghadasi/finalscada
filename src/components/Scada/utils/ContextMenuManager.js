@@ -4,6 +4,7 @@ export default class ContextMenuManager {
   constructor(
     jointEl,
     graph,
+    paper,
     linkManager,
     portManager,
     elementUtils,
@@ -11,6 +12,7 @@ export default class ContextMenuManager {
   ) {
     this.jointEl = jointEl;
     this.graph = graph;
+    this.paper = paper;
     this.linkManager = linkManager;
     this.portManager = portManager;
     this.elementUtils = elementUtils;
@@ -55,11 +57,18 @@ export default class ContextMenuManager {
 
     // پنهان کردن منو در ابتدا
     this.contextMenu.style.display = "none";
+    // دریافت مقدار translate و scale
+    const translate = this.paper.translate();
+    const scale = this.paper.scale();
+    const tx = translate.tx;
+    const ty = translate.ty;
+    const sx = scale.sx;
+    const sy = scale.sy;
 
     // بررسی آیا کلیک روی یک المنت انجام شده است
     const paperOffset = this.jointEl.getBoundingClientRect();
-    const x = event.clientX - paperOffset.left;
-    const y = event.clientY - paperOffset.top;
+    const x = (event.clientX - paperOffset.left - tx) / sx;
+    const y = (event.clientY - paperOffset.top - ty) / sy;
 
     // پیدا کردن المنت زیر نقطه کلیک
     const elementView = this.graph.findModelsFromPoint({ x, y })[0];
@@ -117,10 +126,9 @@ export default class ContextMenuManager {
     this.addMenuItem("Element Info", () => {
       Swal.fire({
         title: "Element Info",
-        html: `Type: ${
-          this.selectedElement.get("type") ||
+        html: `Type: ${this.selectedElement.get("type") ||
           this.selectedElement.attributes.type
-        }<br>
+          }<br>
                ID: ${this.selectedElement.id}`,
         icon: "info",
       });

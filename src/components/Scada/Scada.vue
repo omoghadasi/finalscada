@@ -97,6 +97,7 @@ onMounted(() => {
   const contextMenuManager = new ContextMenuManager(
     jointEl.value,
     graph,
+    paper,
     linkManager,
     portManager,
     elementUtils,
