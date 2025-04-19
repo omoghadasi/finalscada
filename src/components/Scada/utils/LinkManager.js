@@ -1,5 +1,6 @@
 import Swal from "sweetalert2";
 import * as joint from "@joint/core";
+import Links from "../shapes/Links";
 
 export default class LinkManager {
   constructor(graph, toolbarManager) {
@@ -39,82 +40,6 @@ export default class LinkManager {
     };
   }
 
-  createLink(sourceId, targetId, linkType) {
-    const source = this.graph.getCell(sourceId);
-    const target = this.graph.getCell(targetId);
-
-    if (!source || !target) {
-      Swal.fire({
-        title: "Error",
-        text: "Source or target element not found",
-        icon: "error",
-      });
-      return;
-    }
-
-    // تنظیمات مشترک برای همه لینک‌ها
-    const commonLinkOptions = {
-      source: { id: sourceId },
-      target: { id: targetId },
-      router: { name: "manhattan", args: { padding: 10 } },
-      connector: { name: "rounded", args: { radius: 10 } },
-      vertices: [],
-      interactive: true,
-    };
-
-    // Create link based on type
-    let link;
-
-    switch (linkType) {
-      case "pipe":
-        link = this.createPipeLink(commonLinkOptions);
-        break;
-      case "electrical":
-        link = this.createElectricalLink(commonLinkOptions);
-        break;
-      case "data":
-        link = this.createDataLink(commonLinkOptions);
-        break;
-      case "signal":
-        link = this.createSignalLink(commonLinkOptions);
-        break;
-      default:
-        link = this.createDefaultLink(commonLinkOptions);
-    }
-
-    // Add link to the graph
-    this.graph.addCell(link);
-
-    // اگر paper موجود باشد، ابزارهای ویرایش لینک را فعال کنیم
-    if (this.graph.paper) {
-      const linkView = link.findView(this.graph.paper);
-      if (linkView) {
-        linkView.addTools(
-          new joint.dia.ToolsView({
-            tools: [
-              new joint.linkTools.Vertices(),
-              new joint.linkTools.Segments(),
-              new joint.linkTools.SourceArrowhead(),
-              new joint.linkTools.TargetArrowhead(),
-            ],
-          })
-        );
-      }
-    }
-
-    // Show success message
-    Swal.fire({
-      title: "Link Created",
-      text: `Link created between ${source.get("type")} and ${target.get(
-        "type"
-      )}`,
-      icon: "success",
-      timer: 2000,
-      showConfirmButton: false,
-    });
-
-    return link;
-  }
 
   createPipeLink(options) {
     return new joint.shapes.standard.Link({
@@ -131,79 +56,6 @@ export default class LinkManager {
           position: 0.5,
           attrs: {
             text: { text: "Pipe" },
-          },
-        },
-      ],
-    });
-  }
-
-  createElectricalLink(options) {
-    return new joint.shapes.standard.Link({
-      ...options,
-      attrs: {
-        line: {
-          stroke: "#e74c3c",
-          strokeWidth: 3,
-          strokeDasharray: "5 2",
-          targetMarker: { type: "circle", fill: "#e74c3c" },
-        },
-      },
-      labels: [
-        {
-          position: 0.5,
-          attrs: {
-            text: { text: "Electrical" },
-          },
-        },
-      ],
-    });
-  }
-
-  createDataLink(options) {
-    return new joint.shapes.standard.Link({
-      ...options,
-      attrs: {
-        line: {
-          stroke: "#2ecc71",
-          strokeWidth: 2,
-          strokeDasharray: "3 3",
-          targetMarker: {
-            type: "path",
-            d: "M 10 -5 0 0 10 5 z",
-            fill: "#2ecc71",
-          },
-        },
-      },
-      labels: [
-        {
-          position: 0.5,
-          attrs: {
-            text: { text: "Data" },
-          },
-        },
-      ],
-    });
-  }
-
-  createSignalLink(options) {
-    return new joint.shapes.standard.Link({
-      ...options,
-      attrs: {
-        line: {
-          stroke: "#9b59b6",
-          strokeWidth: 2,
-          targetMarker: {
-            type: "path",
-            d: "M 10 -5 0 0 10 5 z",
-            fill: "#9b59b6",
-          },
-        },
-      },
-      labels: [
-        {
-          position: 0.5,
-          attrs: {
-            text: { text: "Signal" },
           },
         },
       ],
@@ -328,8 +180,8 @@ export default class LinkManager {
       html: `
         <div style="text-align: left; margin-bottom: 15px; padding: 10px; background-color: #f0f0f0; border-radius: 5px;">
           <strong>Source Element:</strong> ${sourceElement.get(
-            "type"
-          )} (${sourceElement.id.substring(0, 8)})
+        "type"
+      )} (${sourceElement.id.substring(0, 8)})
         </div>
         <div style="text-align: left; margin-bottom: 15px;">
           <label for="source-port" style="display: block; margin-bottom: 5px; font-weight: bold;">Source Port:</label>
@@ -496,16 +348,7 @@ export default class LinkManager {
     let link;
     switch (linkType) {
       case "pipe":
-        link = this.createPipeLink(linkOptions);
-        break;
-      case "electrical":
-        link = this.createElectricalLink(linkOptions);
-        break;
-      case "data":
-        link = this.createDataLink(linkOptions);
-        break;
-      case "signal":
-        link = this.createSignalLink(linkOptions);
+        link = new Links.Pipe(linkOptions);
         break;
       default:
         link = this.createDefaultLink(linkOptions);

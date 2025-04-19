@@ -28,6 +28,113 @@ export default class Zone extends dia.Element {
           y: "calc(h / 2)",
         },
       },
+      ports: {
+        groups: {
+          input: {
+            position: 'absolute',
+            attrs: {
+              portBody: {
+                r: 6,
+                magnet: false,
+                stroke: "#3498db",
+                strokeWidth: 2,
+                fill: "#fff",
+              },
+              portLabel: {
+                magnet: false,
+                fontSize: 10,
+                fill: "#333",
+                textAnchor: "middle",
+                textVerticalAnchor: "middle",
+                refX: 12, // فاصله متن از دایره
+              },
+            },
+            markup: [
+              {
+                tagName: "circle",
+                selector: "portBody",
+              },
+              {
+                tagName: "text",
+                selector: "portLabel",
+              },
+            ],
+          },
+          output: {
+            position: 'absolute',
+            attrs: {
+              portBody: {
+                r: 6,
+                magnet: false,
+                stroke: "#3498db",
+                strokeWidth: 2,
+                fill: "#fff",
+              },
+              portLabel: {
+                magnet: false,
+                fontSize: 10,
+                fill: "#333",
+                textAnchor: "middle",
+                textVerticalAnchor: "middle",
+                refX: 12, // فاصله متن از دایره
+              },
+            },
+            markup: [
+              {
+                tagName: "circle",
+                selector: "portBody",
+              },
+              {
+                tagName: "text",
+                selector: "portLabel",
+              },
+            ],
+          },
+          inout: {
+            position: 'absolute',
+            attrs: {
+              portBody: {
+                r: 6,
+                magnet: false,
+                stroke: "#3498db",
+                strokeWidth: 2,
+                fill: "#fff",
+              },
+              portLabel: {
+                magnet: false,
+                fontSize: 10,
+                fill: "#333",
+                textAnchor: "middle",
+                textVerticalAnchor: "middle",
+                refX: 12, // فاصله متن از دایره
+              },
+            },
+            markup: [
+              {
+                tagName: "circle",
+                selector: "portBody",
+              },
+              {
+                tagName: "text",
+                selector: "portLabel",
+              },
+            ],
+          },
+        },
+        items: [
+          {
+            id: "output",
+            group: "output",
+            linkType: 'pipe',
+            attrs: {
+              position: {
+                x: 0,
+                y: 12,
+              },
+            },
+          },
+        ]
+      }
     };
   }
 

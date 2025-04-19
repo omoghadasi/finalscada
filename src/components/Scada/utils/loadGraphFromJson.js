@@ -30,18 +30,7 @@ export default function loadGraphFromJSON(graph, json) {
             elements.push(cell);
         }
     });
-    console.log(elements);
-
-    // ترتیب مهمه!
-    graph.clear(); // اگه می‌خوای اول پاک کنی
+    graph.clear();
     graph.addCells(elements);
-    let index = 0
-
-    let validIndex = [2, 5, 6, 7, 8, 9, 12, 13, 14, 15]
-    let invalidLinks = links.filter(link => !validIndex.includes(links.indexOf(link)));
-    let validLinks = links.filter(link => validIndex.includes(links.indexOf(link)));
-    graph.addCells(validLinks);
-    console.log("Valid Links:", validLinks);
-    console.log("Invalid Links:", invalidLinks);
-    // graph.addCell(invalidLinks[0])
+    graph.addCells(links);
 }
