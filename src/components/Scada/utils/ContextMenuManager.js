@@ -36,6 +36,7 @@ export default class ContextMenuManager {
     document.body.appendChild(this.contextMenu);
 
     this.setupEventListeners();
+    this.handleLinkContextMenu();
   }
 
   setupEventListeners() {
@@ -154,5 +155,60 @@ export default class ContextMenuManager {
 
     menuItem.addEventListener("click", onClick);
     this.contextMenu.appendChild(menuItem);
+  }
+
+  handleLinkContextMenu(event) {
+    this.paper.on("link:contextmenu", (linkView, evt) => {
+      evt.preventDefault();
+
+      const link = linkView.model;
+      const { clientX: x, clientY: y } = evt;
+
+      const menu = document.createElement("div");
+      menu.style.position = "absolute";
+      menu.style.left = `${x}px`;
+      menu.style.top = `${y}px`;
+      menu.style.background = "#fff";
+      menu.style.border = "1px solid #ddd";
+      menu.style.padding = "10px";
+      menu.style.boxShadow = "0 2px 5px rgba(0, 0, 0, 0.2)";
+      menu.style.zIndex = 1000;
+
+      menu.innerHTML = `
+    <div style="cursor: pointer; margin-bottom: 5px;" id="delete-link">Delete Link</div>
+    <div style="cursor: pointer;" id="edit-link">Edit Link</div>
+  `;
+
+      document.body.appendChild(menu);
+
+      menu.addEventListener("click", (e) => {
+        if (e.target.id === "delete-link") {
+          link.remove(); // حذف لینک
+        } else if (e.target.id === "edit-link") {
+          Swal.fire({
+            title: "Edit Link",
+            input: "text",
+            inputValue: link.attr("line/stroke"),
+            showCancelButton: true,
+            confirmButtonText: "Save",
+          }).then((result) => {
+            if (result.isConfirmed) {
+              link.attr("line/stroke", result.value); // تغییر رنگ لینک
+            }
+          });
+        }
+        document.body.removeChild(menu);
+      });
+
+      document.addEventListener(
+        "click",
+        () => {
+          if (document.body.contains(menu)) {
+            document.body.removeChild(menu);
+          }
+        },
+        { once: true }
+      );
+    });
   }
 }
