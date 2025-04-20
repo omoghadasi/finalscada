@@ -269,6 +269,18 @@ export default function MultiSelectController(paper, graph) {
             });
 
         }
+        // handle delete key press
+        if (evt.key === "Delete") {
+            if (selectedElements) {
+                evt.preventDefault();
+                graph.removeCells(selectedElements);
+                selectedElements = []
+                toast("Selected elements have been deleted.", {
+                    "type": "success",
+                })
+            }
+        }
+
     });
 
     return {

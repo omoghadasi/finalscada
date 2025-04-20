@@ -5,7 +5,7 @@ export default class ElementUtils {
   constructor(graph) {
     this.graph = graph;
     this.initRotationTool();
-    this.initResizeTool(); // اضافه کردن ابزار تغییر اندازه
+    this.initResizeTool();
   }
 
   initRotationTool() {
@@ -603,5 +603,54 @@ export default class ElementUtils {
         showConfirmButton: false,
       });
     }
+  }
+  dragAndDropPort(paper) {
+    paper.on(
+      "element:magnet:pointerdown",
+      (elementView, evt, magnetSVGElement, x, y) => {
+        const el = evt.target;
+        const portElement = el.parentElement;
+        const portId = portElement.getAttribute("port");
+        const element = elementView.model;
+        if (!element || !portId) return;
+        if (portId) {
+          // دریافت اندازه المنت
+          const elementSize = element.get("size");
+          const elementWidth = elementSize.width;
+          const elementHeight = elementSize.height;
+          let initialMouseX = 0;
+          let initialMouseY = 0;
+          let initialPortX = 0;
+          let initialPortY = 0;
+          portElement.addEventListener("mousedown", function (event) {
+            initialMouseX = event.clientX;
+            initialMouseY = event.clientY;
+            const portBBox = portElement.getBBox();
+            initialPortX = portBBox.x;
+            initialPortY = portBBox.y;
+            document.addEventListener("mousemove", handleDrag);
+            document.addEventListener("mouseup", stopDrag);
+          });
+          // eslint-disable-next-line no-inner-declarations
+          function handleDrag(event) {
+            const dx = event.clientX - initialMouseX;
+            const dy = event.clientY - initialMouseY;
+
+            // محدود کردن موقعیت پورت به محدوده المنت
+            const newX = Math.max(0, Math.min(dx, elementWidth));
+            const newY = Math.max(0, Math.min(dy, elementHeight));
+
+            // به‌روزرسانی موقعیت پورت
+            element.portProp(portId, "args/x", newX);
+            element.portProp(portId, "args/y", newY);
+          }
+          // eslint-disable-next-line no-inner-declarations
+          function stopDrag() {
+            document.removeEventListener("mousemove", handleDrag);
+            document.removeEventListener("mouseup", stopDrag);
+          }
+        }
+      }
+    );
   }
 }

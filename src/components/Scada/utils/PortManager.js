@@ -184,6 +184,7 @@ export default class PortManager {
           stroke: portColor,
           strokeWidth: 2,
           fill: "#fff",
+          cursor: "move",
         },
         text: {
           magnet: false,

@@ -34,21 +34,12 @@ const portManager = new PortManager(graph);
 const elementUtils = new ElementUtils(graph);
 
 onMounted(() => {
-  fetch("/graphData.json")
-    .then((response) => response.json())
-    .then((data) => {
-      loadGraphFromJSON(graph, data);
-    })
-    .catch((error) => {
-      console.error("Error loading graph data:", error);
-    });
-
   const paper = new dia.Paper({
     el: jointEl.value,
     cellViewNamespace: namespace,
     model: graph,
-    width: jointEl.value.offsetWidth, // عرض کانتینر
-    height: scadaContainer.value.clientHeight, // ارتفاع کانتینر
+    width: jointEl.value.offsetWidth,
+    height: scadaContainer.value.clientHeight,
     gridSize: 10,
     drawGrid: "mesh",
     interactive: true,
@@ -61,7 +52,37 @@ onMounted(() => {
     defaultAnchor: {
       name: "perpendicular",
     },
+
+    validateConnection: function (
+      cellViewS,
+      magnetS,
+      cellViewT,
+      magnetT,
+      end,
+      linkView
+    ) {
+      // Prevent linking from input ports
+      if (magnetS && magnetS.getAttribute("port-group") === "in") return false;
+      // Prevent linking from output ports to input ports within one element
+      if (cellViewS === cellViewT) return false;
+      // Prevent linking to output ports
+      return magnetT && magnetT.getAttribute("port-group") === "in";
+    },
+    validateMagnet: function (cellView, magnet) {
+      // Note that this is the default behaviour. It is shown for reference purposes.
+      // Disable linking interaction for magnets marked as passive
+      return magnet.getAttribute("magnet") !== "passive";
+    },
   });
+
+  fetch("/graphData.json")
+    .then((response) => response.json())
+    .then((data) => {
+      loadGraphFromJSON(graph, data);
+    })
+    .catch((error) => {
+      console.error("Error loading graph data:", error);
+    });
 
   // فعال کردن ابزار چرخش
   paper.options.defaultConnector = { name: "rounded" };
@@ -92,6 +113,8 @@ onMounted(() => {
       elementView.showResizeHandles();
     }
   });
+
+  elementUtils.dragAndDropPort(paper);
 
   const contextMenuManager = new ContextMenuManager(
     jointEl.value,
