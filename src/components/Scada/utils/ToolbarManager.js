@@ -16,7 +16,6 @@ export default class ToolbarManager {
       { type: "ControlValve", label: "Control Valve", icon: "🔄" },
       { type: "HandValve", label: "Hand Valve", icon: "🔧" },
       { type: "Join", label: "Join", icon: "➕" },
-      { type: "Pipe", label: "Pipe", icon: "➖" },
       { type: "Zone", label: "Zone", icon: "🔲" },
       { type: "CircleProgressBar", label: "Progress Bar", icon: "⭕" },
       { type: "Panel", label: "Panel", icon: "📊" },
@@ -208,12 +207,6 @@ export default class ToolbarManager {
       case "ImageElement":
         newElement = new this.namespace.ImageElement({ position: { x, y } });
         // رویداد دابل کلیک برای ویرایش تصویر در ImageView.js مدیریت می‌شود
-        break;
-      case "Pipe":
-        // For pipes we need source and target, so we don't add anything yet
-        alert(
-          'To create a pipe, first select two elements and then choose "Connect" from the right-click menu.'
-        );
         break;
       default:
         console.warn("Unknown element type:", type);

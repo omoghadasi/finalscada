@@ -338,6 +338,9 @@ export default class LinkManager {
         id: targetElementId,
         port: targetPortId,
       },
+      anchor: {
+        name: "modelCenter"
+      },
       router: { name: "manhattan", args: { padding: 10 } },
       connector: { name: "rounded", args: { radius: 10 } },
       vertices: [],

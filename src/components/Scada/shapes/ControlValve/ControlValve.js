@@ -184,10 +184,11 @@ export default class ControlValve extends dia.Element {
   }
   // todo badan
   // اضافه کردن متد initialize برای مدیریت تغییر اندازه
-  // initialize() {
-  //   super.initialize();
-  //   // this.on("change:size", this.updatePortsOnResize, this);
-  // }
+  initialize(...args) {
+    super.initialize(...args);
+    this.on("change:size", this.updatePortsOnResize, this);
+
+  }
 
   // متد جدید برای به‌روزرسانی پورت‌ها هنگام تغییر اندازه
   updatePortsOnResize() {

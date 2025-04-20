@@ -18,7 +18,7 @@ export default {
     const graph = paper.model;
     MultiSelectController(paper, graph);
     ZoomController(paper, document);
-    graph.getElements().forEach((cell) => {
+    graph.on('add', (cell) => {
       switch (cell.get("type")) {
         case "ControlValve":
           SliderValveControl.add(cell.findView(paper), "root", "slider", {

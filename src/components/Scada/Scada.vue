@@ -37,8 +37,7 @@ onMounted(() => {
   fetch("/graphData.json")
     .then((response) => response.json())
     .then((data) => {
-      // loadGraphFromJSON(graph, data);
-      graph.fromJSON(data);
+      loadGraphFromJSON(graph, data);
     })
     .catch((error) => {
       console.error("Error loading graph data:", error);
