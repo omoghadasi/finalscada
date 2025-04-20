@@ -122,7 +122,10 @@ export default class ContextMenuManager {
         this.contextMenu.style.display = "none";
       });
     }
-
+    this.addMenuItem("Edit Element", () => {
+      this.elementUtils.editElementAttributes(this.selectedElement);
+      this.contextMenu.style.display = "none";
+    });
     // Element info option for all elements
     this.addMenuItem("Element Info", () => {
       Swal.fire({
@@ -135,6 +138,7 @@ export default class ContextMenuManager {
       });
       this.contextMenu.style.display = "none";
     });
+
   }
 
   addMenuItem(text, onClick) {

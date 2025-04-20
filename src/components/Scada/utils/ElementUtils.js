@@ -655,4 +655,58 @@ export default class ElementUtils {
       }
     );
   }
+  editElementAttributes(element) {
+    const attributes = element.get("attrs");
+    const attributeKeys = Object.keys(attributes);
+
+    // ایجاد فرم HTML برای ویرایش ویژگی‌ها
+    const formHtml = attributeKeys
+      .map((key, index) => {
+        const value = JSON.stringify(attributes[key], null, 2); // نمایش مقادیر به صورت JSON
+        return `
+          <div style="margin-bottom: 10px;">
+            <label style="font-weight: bold;">${key}:</label>
+            <textarea id="attribute-${index}" style="width: 100%; height: 60px;">${value}</textarea>
+          </div>
+        `;
+      })
+      .join("");
+
+    // نمایش SweetAlert با فرم
+    Swal.fire({
+      title: "Edit Element Attributes",
+      html: `
+        <div id="attribute-container" style="text-align: left; max-height: 400px; overflow-y: auto;">
+          ${formHtml}
+        </div>
+      `,
+      showCancelButton: true,
+      confirmButtonText: "Save",
+      cancelButtonText: "Cancel",
+      preConfirm: () => {
+        const updatedAttributes = {};
+        attributeKeys.forEach((key, index) => {
+          const inputValue = document.getElementById(`attribute-${index}`).value;
+          try {
+            updatedAttributes[key] = JSON.parse(inputValue); // تبدیل مقدار به JSON
+          } catch (error) {
+            Swal.showValidationMessage(`Invalid JSON for attribute: ${key}`);
+          }
+        });
+        return updatedAttributes;
+      },
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const updatedAttributes = result.value;
+        element.attr(updatedAttributes); // به‌روزرسانی ویژگی‌های المنت
+        Swal.fire({
+          title: "Success",
+          text: "Attributes updated successfully!",
+          icon: "success",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    });
+  }
 }
