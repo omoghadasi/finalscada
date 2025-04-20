@@ -351,21 +351,21 @@ export default class PortManager {
       case "left":
         return {
           x: 0, // Left edge
-          y: Math.max(0, Math.round(Math.random() * height)), // Centered vertically
+          y: height / 2, // Centered vertically
         };
       case "right":
         return {
           x: width, // Right edge  
-          y: Math.max(0, Math.round(Math.random() * height)), // Centered vertically
+          y: height / 2, // Centered vertically
         };
       case "top":
         return {
-          x: Math.max(0, Math.round(Math.random() * width)), // Centered horizontally
+          x: width / 2, // Centered horizontally
           y: 0 // Top edge
         };
       case "bottom":
         return {
-          x: Math.max(0, Math.round(Math.random() * width)), // Centered horizontally
+          x: width / 2, // Centered horizontally
           y: height // Bottom edge
         };
       default:

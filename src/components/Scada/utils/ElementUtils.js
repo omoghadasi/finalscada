@@ -622,7 +622,9 @@ export default class ElementUtils {
           let initialMouseY = 0;
           let initialPortX = 0;
           let initialPortY = 0;
+          const originalFill = portElement.querySelector("circle").getAttribute("fill");
           portElement.addEventListener("mousedown", function (event) {
+            portElement.querySelector("circle").setAttribute("fill", "#3498db");
             initialMouseX = event.clientX;
             initialMouseY = event.clientY;
             const portBBox = portElement.getBBox();
@@ -644,8 +646,8 @@ export default class ElementUtils {
             element.portProp(portId, "args/x", newX);
             element.portProp(portId, "args/y", newY);
           }
-          // eslint-disable-next-line no-inner-declarations
           function stopDrag() {
+            portElement.querySelector("circle").setAttribute("fill", originalFill);
             document.removeEventListener("mousemove", handleDrag);
             document.removeEventListener("mouseup", stopDrag);
           }
