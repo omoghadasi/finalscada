@@ -34,8 +34,8 @@ export default class ElementUtils {
 
       // ایجاد دستگیره چرخش
       const elementBBox = element.getBBox();
-      const centerX = (elementBBox.x + ((elementBBox.width / 2) + tx)) * sx;
-      const handleY = (elementBBox.y - 20 + ty) * sy;
+      const centerX = (elementBBox.x + elementBBox.width / 2) * sx + tx;
+      const handleY = (elementBBox.y - 20) * sy + ty;
 
       // ایجاد گروه SVG
       const rotateHandleGroup = document.createElementNS(
@@ -60,7 +60,7 @@ export default class ElementUtils {
         "line"
       );
       connector.setAttribute("x1", centerX);
-      connector.setAttribute("y1", (elementBBox.y + ty) * sy);
+      connector.setAttribute("y1", (elementBBox.y * sy) + ty);
       connector.setAttribute("x2", centerX);
       connector.setAttribute("y2", handleY);
       connector.setAttribute("stroke", "#4285F4");
