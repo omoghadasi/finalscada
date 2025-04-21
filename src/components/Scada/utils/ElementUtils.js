@@ -250,32 +250,20 @@ export default class ElementUtils {
       );
       resizeHandlesGroup.classList.add("resize-handles-group");
 
-      // دریافت مختصات المنت
-      const translate = paper.translate();
-      const scale = paper.scale();
-
-      const tx = translate.tx;
-      const ty = translate.ty;
-      const sx = scale.sx;
-      const sy = scale.sy;
-
       const elementBBox = element.getBBox();
-      const x = (elementBBox.x + tx) * sx;
-      const y = (elementBBox.y + ty) * sy;
-      const width = elementBBox.width * sx;
-      const height = elementBBox.height * sy;
+      const viewBBox = this.getBBox(); // خود elementView
+      const x = viewBBox.x;
+      const y = viewBBox.y;
+      const width = viewBBox.width;
+      const height = viewBBox.height;
 
-      // موقعیت دستگیره‌ها
+
+
       const handlePositions = [
         { x: x, y: y, cursor: "nw-resize", position: "top-left" },
         { x: x + width, y: y, cursor: "ne-resize", position: "top-right" },
         { x: x, y: y + height, cursor: "sw-resize", position: "bottom-left" },
-        {
-          x: x + width,
-          y: y + height,
-          cursor: "se-resize",
-          position: "bottom-right",
-        },
+        { x: x + width, y: y + height, cursor: "se-resize", position: "bottom-right" },
       ];
 
       // ایجاد دستگیره‌ها
@@ -404,7 +392,7 @@ export default class ElementUtils {
       // متد به‌روزرسانی موقعیت دستگیره‌ها
       this.updateResizeHandles = function () {
         const element = this.model;
-        const newBBox = element.getBBox();
+        const newBBox = this.getBBox();
         const angle = element.get('angle') || 0; // دریافت زاویه چرخش المان
 
         // محاسبه نقطه مرکز المان
