@@ -623,14 +623,23 @@ export default class ElementUtils {
           });
           // eslint-disable-next-line no-inner-declarations
           function handleDrag(event) {
-            const dx = event.clientX - initialMouseX;
-            const dy = event.clientY - initialMouseY;
+            const local = paper.clientToLocalPoint({
+              x: event.clientX,
+              y: event.clientY,
+            });
 
-            // محدود کردن موقعیت پورت به محدوده المنت
-            const newX = Math.max(0, Math.min(dx, elementWidth));
-            const newY = Math.max(0, Math.min(dy, elementHeight));
+            const elementPosition = element.position();
 
-            // به‌روزرسانی موقعیت پورت
+            // تبدیل به مختصات داخلی المنت (نسبت به بالا-چپ المنت)
+            const localX = local.x - elementPosition.x;
+            const localY = local.y - elementPosition.y;
+
+            // محدود کردن به محدوده‌ی المنت
+            const elementSize = element.size();
+            const newX = Math.max(0, Math.min(localX, elementSize.width));
+            const newY = Math.max(0, Math.min(localY, elementSize.height));
+
+            // اعمال موقعیت جدید به پورت
             element.portProp(portId, "args/x", newX);
             element.portProp(portId, "args/y", newY);
           }
