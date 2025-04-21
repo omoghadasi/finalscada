@@ -164,11 +164,16 @@ export default class ContextMenuManager {
   handleLinkContextMenu(event) {
     this.paper.on("link:contextmenu", (linkView, evt) => {
       evt.preventDefault();
+      evt.stopPropagation();
+
+      // حذف منوهای قبلی
+      document.querySelectorAll(".custom-context-menu").forEach((el) => el.remove());
 
       const link = linkView.model;
-      const { clientX: x, clientY: y } = evt;
+      const { pageX: x, pageY: y } = evt;
 
       const menu = document.createElement("div");
+      menu.classList.add("custom-context-menu");
       menu.style.position = "absolute";
       menu.style.left = `${x}px`;
       menu.style.top = `${y}px`;
@@ -179,15 +184,15 @@ export default class ContextMenuManager {
       menu.style.zIndex = 1000;
 
       menu.innerHTML = `
-    <div style="cursor: pointer; margin-bottom: 5px;" id="delete-link">Delete Link</div>
-    <div style="cursor: pointer;" id="edit-link">Edit Link</div>
-  `;
+        <div style="cursor: pointer; margin-bottom: 5px;" id="delete-link">Delete Link</div>
+        <div style="cursor: pointer;" id="edit-link">Edit Link</div>
+      `;
 
       document.body.appendChild(menu);
 
       menu.addEventListener("click", (e) => {
         if (e.target.id === "delete-link") {
-          link.remove(); // حذف لینک
+          link.remove();
         } else if (e.target.id === "edit-link") {
           Swal.fire({
             title: "Edit Link",
@@ -197,22 +202,28 @@ export default class ContextMenuManager {
             confirmButtonText: "Save",
           }).then((result) => {
             if (result.isConfirmed) {
-              link.attr("line/stroke", result.value); // تغییر رنگ لینک
+              link.attr("line/stroke", result.value);
             }
           });
         }
-        document.body.removeChild(menu);
+        menu.remove();
       });
 
-      document.addEventListener(
-        "click",
-        () => {
-          if (document.body.contains(menu)) {
-            document.body.removeChild(menu);
-          }
-        },
-        { once: true }
-      );
+      // جلوگیری از باز شدن منوی مرورگر روی کل صفحه در زمانی که این منو باز شده
+      const blockBrowserContext = (e) => {
+        e.preventDefault();
+      };
+      document.addEventListener("contextmenu", blockBrowserContext);
+
+      // حذف منو و لیسنر بعد از کلیک خارج
+      const removeMenu = () => {
+        menu.remove();
+        document.removeEventListener("click", removeMenu);
+        document.removeEventListener("contextmenu", blockBrowserContext);
+      };
+
+      document.addEventListener("click", removeMenu, { once: true });
     });
+
   }
 }
