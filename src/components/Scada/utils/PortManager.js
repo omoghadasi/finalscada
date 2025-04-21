@@ -101,6 +101,10 @@ export default class PortManager {
           <label for="port-label" style="display: block; margin-bottom: 5px; font-weight: bold;">Port Label (optional):</label>
           <input id="port-label" class="swal2-input" placeholder="Enter port label" style="width: 100%;">
         </div>
+        <div style="text-align: left; margin-bottom: 15px;">
+          <label for="port-hidden" style="display: block; margin-bottom: 5px; font-weight: bold;">Hidden Port:</label>
+          <input id="port-hidden" type="checkbox" style="margin-right: 5px;"> Make this port hidden
+        </div>
       `,
       showCancelButton: true,
       confirmButtonText: "Add Port",
@@ -111,6 +115,7 @@ export default class PortManager {
         const linkType = document.getElementById("link-type").value;
         const portPosition = document.getElementById("port-position").value;
         const portLabel = document.getElementById("port-label").value;
+        const isHidden = document.getElementById("port-hidden").checked;
 
         // اعتبارسنجی ورودی‌ها
         if (!portId) {
@@ -124,11 +129,11 @@ export default class PortManager {
           return false;
         }
 
-        return { portId, portType, linkType, portPosition, portLabel };
+        return { portId, portType, linkType, portPosition, portLabel, isHidden };
       },
     }).then((result) => {
       if (result.isConfirmed) {
-        const { portId, portType, linkType, portPosition, portLabel } =
+        const { portId, portType, linkType, portPosition, portLabel, isHidden } =
           result.value;
         this.addPortToElement(
           element,
@@ -136,7 +141,8 @@ export default class PortManager {
           portType,
           linkType,
           portPosition,
-          portLabel
+          portLabel,
+          isHidden
         );
       }
     });
@@ -150,8 +156,9 @@ export default class PortManager {
    * @param {string} linkType - نوع لینک (default, pipe, electrical, data, signal)
    * @param {string} position - موقعیت پورت (left, right, top, bottom)
    * @param {string} label - برچسب پورت (اختیاری)
+   * @param {boolean} isHidden - پورت مخفی (اختیاری)
    */
-  addPortToElement(element, portId, portType, linkType, position, label) {
+  addPortToElement(element, portId, portType, linkType, position, label, isHidden) {
     // تنظیم رنگ پورت بر اساس نوع لینک
     let portColor;
     switch (linkType) {
@@ -178,7 +185,8 @@ export default class PortManager {
       group: portType,
       linkType: linkType, // ذخیره نوع لینک در پورت
       attrs: {
-        circle: {
+        portBody: {
+          display: isHidden ? 'none' : 'block',
           r: 6,
           magnet: false,
           stroke: portColor,
@@ -186,7 +194,8 @@ export default class PortManager {
           fill: "#fff",
           cursor: "move",
         },
-        text: {
+        portLabel: {
+          display: isHidden ? 'none' : 'block',
           magnet: false,
           text: label || portId,
           fill: "#333",
@@ -210,7 +219,7 @@ export default class PortManager {
       title: "Port Added",
       text: `Port "${portId}" (${linkType}) added to element`,
       icon: "success",
-      timer: 2000,
+      timer: 1500,
       showConfirmButton: false,
     });
   }
